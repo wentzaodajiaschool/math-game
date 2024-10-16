@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>數學工具入口網站</title>
+    <title>數學工具集</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: #f0f0f0;
             margin: 0;
             padding: 20px;
@@ -16,49 +19,90 @@
             min-height: 100vh;
         }
         .container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 100%;
             padding: 20px;
-            width: 300px;
         }
-        h1 {
+        .app-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
             color: #333;
-            text-align: center;
-            margin-bottom: 20px;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
+        .icon {
+            width: 80px;
+            height: 80px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
             margin-bottom: 10px;
         }
-        a {
-            display: block;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
+        .app-name {
+            font-size: 14px;
             text-align: center;
-            transition: background-color 0.3s;
         }
-        a:hover {
-            background-color: #45a049;
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>數學工具入口</h1>
-        <ul>
-            <li><a href="乘法表練習.html">乘法表練習</a></li>
-            <li><a href="加法練習.html">加法練習</a></li>
-            <li><a href="因數和倍數計算器.html">因數和倍數計算器</a></li>
-            <li><a href="長度單位轉換.html">長度單位轉換</a></li>
-            <li><a href="翰林時鐘.html">翰林時鐘</a></li>
-        </ul>
+        <a href="乘法表練習.html" class="app-icon">
+            <div class="icon" style="background-image: url('icons/multiplication.png');"></div>
+            <span class="app-name">乘法表練習</span>
+        </a>
+        <a href="加法練習.html" class="app-icon">
+            <div class="icon" style="background-image: url('icons/addition.png');"></div>
+            <span class="app-name">加法練習</span>
+        </a>
+        <a href="因數和倍數計算器.html" class="app-icon">
+            <div class="icon" style="background-image: url('icons/factor_multiple.png');"></div>
+            <span class="app-name">因數和倍數</span>
+        </a>
+        <a href="長度單位轉換.html" class="app-icon">
+            <div class="icon" style="background-image: url('icons/length_conversion.png');"></div>
+            <span class="app-name">長度單位轉換</span>
+        </a>
+        <a href="翰林時鐘.html" class="app-icon">
+            <div class="icon" style="background-image: url('icons/clock.png');"></div>
+            <span class="app-name">翰林時鐘</span>
+        </a>
     </div>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+              .then((reg) => console.log('Service worker registered.', reg))
+              .catch((err) => console.log('Service worker registration failed.', err));
+        }
+
+        // 檢測是否在 PWA 模式下運行
+        function isPWA() {
+            return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        }
+
+        // 根據運行模式調整布局
+        function adjustLayout() {
+            const container = document.querySelector('.container');
+            if (isPWA()) {
+                container.style.minHeight = '100vh';
+                document.body.style.paddingTop = '40px'; // 為狀態欄留出空間
+            } else {
+                container.style.minHeight = 'auto';
+                document.body.style.paddingTop = '20px';
+            }
+        }
+
+        // 頁面加載時調整布局
+        window.addEventListener('load', adjustLayout);
+
+        // 當顯示模式改變時重新調整布局
+        window.matchMedia('(display-mode: standalone)').addListener(adjustLayout);
+    </script>
 </body>
 </html>
