@@ -225,6 +225,7 @@
                                 <option value="20">20 秒</option>
                                 <option value="25">25 秒</option>
                                 <option value="30">30 秒</option>
+                                <option value="timer">計時模式</option>
                             </select>
                         </div>
                         <div class="text-center">
@@ -266,7 +267,7 @@
                     </div>
                     <div class="question-container">
                         <h3 class="question" id="questionText"></h3>
-                        <input type="text" id="answerInput" class="form-control" readonly autocomplete="off" inputmode="numeric">
+                        <input type="text" id="answerInput" class="form-control" readonly>
                     </div>
                     <div class="keyboard" id="keyboard">
                         <button class="btn btn-light" data-value="7">7</button>
@@ -318,12 +319,23 @@ $(document).ready(function() {
     let score = 0;
     let timer;
     let userAnswers = [];
+    let isTimerMode = false;
+    let startTime;
+    let totalTime;
 
     $('#startButton').click(function() {
         let firstNumberDigits = parseInt($('#firstNumber').val());
         let secondNumberDigits = parseInt($('#secondNumber').val());
         questionCount = parseInt($('#questionCount').val());
-        timePerQuestion = parseInt($('#timePerQuestion').val());
+        timePerQuestion = $('#timePerQuestion').val();
+        isTimerMode = (timePerQuestion === 'timer');
+
+        if (isTimerMode) {
+            startTime = new Date().getTime();
+            $('.timer').text('已用時間：0 秒');
+        } else {
+            timePerQuestion = parseInt(timePerQuestion);
+        }
 
         generateQuestions(firstNumberDigits, secondNumberDigits);
         currentQuestionIndex = 0;
@@ -379,15 +391,20 @@ $(document).ready(function() {
         $('#answerInput').focus();
 
         clearInterval(timer);
-        let timeLeft = timePerQuestion;
-        timer = setInterval(function() {
-            timeLeft--;
-            $('#timeLeft').text(timeLeft);
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                checkAnswer(true);
-            }
-        }, 1000);
+        if (isTimerMode) {
+            updateTimer();
+            timer = setInterval(updateTimer, 1000);
+        } else {
+            let timeLeft = timePerQuestion;
+            timer = setInterval(function() {
+                timeLeft--;
+                $('#timeLeft').text(timeLeft);
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    checkAnswer(true);
+                }
+            }, 1000);
+        }
     }
 
     function updateProgressBar() {
@@ -403,11 +420,13 @@ $(document).ready(function() {
         let num = $(this).data('value');
         let currentVal = $('#answerInput').val();
         $('#answerInput').val(currentVal + num);
+        $('#answerInput').focus();
     });
 
     $('#deleteButton').click(function() {
         let currentVal = $('#answerInput').val();
         $('#answerInput').val(currentVal.slice(0, -1));
+        $('#answerInput').focus();
     });
 
     $('#submitButton').click(function() {
@@ -438,6 +457,16 @@ $(document).ready(function() {
         });
         currentQuestionIndex++;
         setTimeout(showQuestion, 500);  // 縮短到0.5秒
+
+        if (isTimerMode && currentQuestionIndex >= questions.length) {
+            totalTime = Math.floor((new Date().getTime() - startTime) / 1000);
+        }
+    }
+
+    function updateTimer() {
+        let currentTime = new Date().getTime();
+        let elapsedTime = Math.floor((currentTime - startTime) / 1000);
+        $('.timer').text('已用時間：' + elapsedTime + ' 秒');
     }
 
     function getVerticalAddition(num1, num2) {
@@ -476,6 +505,10 @@ $(document).ready(function() {
         $('#score').text(score);
         $('#totalQuestions').text(questions.length);
 
+        if (isTimerMode) {
+            $('#result .card-body').prepend('<p>總用時：' + totalTime + ' 秒</p>');
+        }
+
         let questionListHtml = '<h3>題目列表：</h3><ul class="list-group">';
         for (let i = 0; i < userAnswers.length; i++) {
             let q = userAnswers[i];
@@ -513,6 +546,12 @@ $(document).ready(function() {
         }
     });
 
+    // 防止虛擬鍵盤彈出
+    $('#answerInput').on('focus', function(e) {
+        $(this).blur();
+    });
+
+    // 確保輸入框始終保持選中狀態
     setInterval(function() {
         $('#answerInput').focus();
     }, 100);
