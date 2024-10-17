@@ -369,7 +369,7 @@
                 <ol>
                     <li>從較大單位轉換到較小單位時，乘以相應的倍數。</li>
                     <li>從較小單位轉換到較大單位時，除以相應的倍數。</li>
-                    <li>跨越多個單位時，可以先轉換到中間單位，再進行下一步轉��。</li>
+                    <li>跨越多個單位時，可以先轉換到中間單位，再進行下一步轉換。</li>
                 </ol>
                 <p>練習提示：</p>
                 <ul>
@@ -695,30 +695,6 @@ $(document).ready(function() {
     setInterval(function() {
         $('#answerInput').focus();
     }, 100);
-
-    // 防止虛擬鍵盤彈出
-    $('#answerInput').on('focus', function(e) {
-        $(this).blur();
-    });
-
-    // 確保輸入框始終保持選中狀態
-    setInterval(function() {
-        $('#answerInput').focus();
-    }, 100);
-
-    // 修改鍵盤按鈕的點擊事件
-    $('#keyboard button').not('#deleteButton, #submitButton').click(function() {
-        let num = $(this).data('value');
-        let currentVal = $('#answerInput').val();
-        $('#answerInput').val(currentVal + num);
-        $('#answerInput').focus();
-    });
-
-    $('#deleteButton').click(function() {
-        let currentVal = $('#answerInput').val();
-        $('#answerInput').val(currentVal.slice(0, -1));
-        $('#answerInput').focus();
-    });
 
 });
 </script>

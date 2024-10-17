@@ -267,7 +267,7 @@
                     </div>
                     <div class="question-container">
                         <h3 class="question" id="questionText"></h3>
-                        <input type="text" id="answerInput" class="form-control" readonly>
+                        <input type="text" id="answerInput" class="form-control" readonly autocomplete="off" inputmode="numeric">
                     </div>
                     <div class="keyboard" id="keyboard">
                         <button class="btn btn-light" data-value="7">7</button>
@@ -420,13 +420,11 @@ $(document).ready(function() {
         let num = $(this).data('value');
         let currentVal = $('#answerInput').val();
         $('#answerInput').val(currentVal + num);
-        $('#answerInput').focus();
     });
 
     $('#deleteButton').click(function() {
         let currentVal = $('#answerInput').val();
         $('#answerInput').val(currentVal.slice(0, -1));
-        $('#answerInput').focus();
     });
 
     $('#submitButton').click(function() {
@@ -546,12 +544,6 @@ $(document).ready(function() {
         }
     });
 
-    // 防止虛擬鍵盤彈出
-    $('#answerInput').on('focus', function(e) {
-        $(this).blur();
-    });
-
-    // 確保輸入框始終保持選中狀態
     setInterval(function() {
         $('#answerInput').focus();
     }, 100);
