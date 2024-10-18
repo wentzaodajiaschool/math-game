@@ -417,6 +417,27 @@
     <div id="countdown" class="countdown-overlay" style="display: none;">
         <div class="countdown-number"></div>
     </div>
+
+    <!-- 在 <div id="app"> 內部，添加以下內容 -->
+    <div id="confirmDialog" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">確認重新開始</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>確定要重新開始嗎？當前進度將會丟失。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="confirmRestart">確定</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- 引入jQuery和Bootstrap JS -->
@@ -425,7 +446,7 @@
 <!-- 自訂腳本 -->
 <script>
 $(document).ready(function() {
-    // 保載��時到頂部
+    // 保載時到頂部
     window.scrollTo(0, 0);
 
     let questionCount = 10;
@@ -848,14 +869,17 @@ $(document).ready(function() {
     }, 100);
 
     $('#backButton').click(function() {
-        if (confirm('確定要重新開始嗎？當前進度將會丟失。')) {
-            isChallenge = false;
-            clearInterval(timer);
-            $('#quiz').hide();
-            $('#setup').show();
-            $('#progressBar').css('width', '0%');
-            window.scrollTo(0, 0);
-        }
+        $('#confirmDialog').modal('show');
+    });
+
+    $('#confirmRestart').click(function() {
+        isChallenge = false;
+        clearInterval(timer);
+        $('#quiz').hide();
+        $('#setup').show();
+        $('#progressBar').css('width', '0%');
+        window.scrollTo(0, 0);
+        $('#confirmDialog').modal('hide');
     });
 
     // 在 document ready 函數的最後添加以下代碼來初始化排行榜
