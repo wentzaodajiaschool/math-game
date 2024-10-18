@@ -356,6 +356,26 @@
                 padding: 6px 12px;
             }
         }
+
+        .challenge-button {
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .challenge-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        #confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -494,7 +514,7 @@
                 <p>對於11到19之間的乘法，這裡有一個簡單的心算技巧：</p>
                 <ol>
                     <li>被乘數與乘數的個位數相加</li>
-                    <li>將上一步的結果乘以10（即在後面加0）</li>
+                    <li>將上一步的結果乘以10（即在後加0）</li>
                     <li>將兩個數的個位數相乘</li>
                     <li>將步驟2和步驟3的結果相加</li>
                 </ol>
@@ -654,6 +674,7 @@
 <!-- 引入jQuery和Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 <!-- 自訂腳本 -->
 <script>
 $(document).ready(function() {
@@ -888,7 +909,7 @@ $(document).ready(function() {
         $('#result .card-body').append(questionListHtml);
 
         // 添加重新開始按鈕
-        $('#result .card-body').append('<button id="restartButton" class="btn btn-primary">再試��次</button>');
+        $('#result .card-body').append('<button id="restartButton" class="btn btn-primary">再試一次</button>');
 
         // 重新綁定重新開始按鈕的事件
         $('#restartButton').click(function() {
@@ -943,6 +964,7 @@ $(document).ready(function() {
     $('#challenge9x9Button, #challenge19x19Button').click(function() {
         isChallenge = true;
         challengeMode = $(this).attr('id') === 'challenge9x9Button' ? '9x9' : '19x19';
+        startConfetti(); // 開始彩帶效果
         startChallenge();
     });
 
@@ -972,6 +994,8 @@ $(document).ready(function() {
         let count = 3;
         $('#countdown').show();
         $('.countdown-number').text(count);
+        startConfetti(); // 開始彩帶效果
+
         const countdownInterval = setInterval(() => {
             count--;
             if (count > 0) {
@@ -1131,6 +1155,28 @@ $(document).ready(function() {
         window.scrollTo(0, 0);
         $('#confirmDialog').modal('hide');
     });
+
+    function startConfetti() {
+        const duration = 4000; // 4 秒
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+
+            const particleCount = 50 * (timeLeft / duration);
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+    }
 });
 </script>
 
@@ -1154,5 +1200,6 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
+<canvas id="confetti"></canvas>
 </body>
 </html>
