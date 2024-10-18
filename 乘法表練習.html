@@ -668,7 +668,7 @@ $(document).ready(function() {
     let score = 0;
     let timer;
     let userAnswers = [];
-    let usedQuestions = new Set(); // 用於追踪已經出現過��題目
+    let usedQuestions = new Set(); // 用於追踪已經出現過題目
 
     let isTimerMode = false;
     let startTime;
@@ -888,7 +888,7 @@ $(document).ready(function() {
         $('#result .card-body').append(questionListHtml);
 
         // 添加重新開始按鈕
-        $('#result .card-body').append('<button id="restartButton" class="btn btn-primary">再試一次</button>');
+        $('#result .card-body').append('<button id="restartButton" class="btn btn-primary">再試��次</button>');
 
         // 重新綁定重新開始按鈕的事件
         $('#restartButton').click(function() {
@@ -1119,16 +1119,40 @@ $(document).ready(function() {
     fetchLeaderboard('19x19');
 
     $('#backButton').click(function() {
-        if (confirm('確定要重新開始嗎？當前進度將會丟失。')) {
-            isChallenge = false;
-            clearInterval(timer);
-            $('#quiz').hide();
-            $('#setup').show();
-            $('#progressBar').css('width', '0%');
-            window.scrollTo(0, 0);
-        }
+        $('#confirmDialog').modal('show');
+    });
+
+    $('#confirmRestart').click(function() {
+        isChallenge = false;
+        clearInterval(timer);
+        $('#quiz').hide();
+        $('#setup').show();
+        $('#progressBar').css('width', '0%');
+        window.scrollTo(0, 0);
+        $('#confirmDialog').modal('hide');
     });
 });
 </script>
+
+<!-- 在 body 結束標籤前添加 -->
+<div id="confirmDialog" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">確認重新開始</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>確定要重新開始嗎？當前進度將會丟失。</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmRestart">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
