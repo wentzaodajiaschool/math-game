@@ -17,17 +17,53 @@
 
         @font-face {
             font-family: 'BpmfZihiKai';
-            src: url('fonts/BpmfZihiKaiStd-Regular.ttf') format('truetype');
+            src: url('fonts/字嗨注音標楷.ttf') format('truetype');
         }
 
         @font-face {
             font-family: 'EduKai';
-            src: url('fonts/edukai-5.0.ttf') format('truetype');
+            src: url('fonts/教育部標準楷書.ttf') format('truetype');
         }
 
         @font-face {
             font-family: 'DottedFont';
             src: url('fonts/虛線體國字.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'YungChuen';
+            src: url('fonts/永傳體.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Wansong';
+            src: url('fonts/芫荽.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'SuiFeng';
+            src: url('fonts/隨峰體.ttf') format('truetype');
+        }
+
+        /* 添加虛線字體的對應版本 */
+        @font-face {
+            font-family: 'DottedEduKai';
+            src: url('fonts/虛線體國字.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'DottedYungChuen';
+            src: url('fonts/永傳體_虛線.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'DottedWansong';
+            src: url('fonts/芫荽_虛線.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'DottedSuiFeng';
+            src: url('fonts/隨峰體_虛線.ttf') format('truetype');
         }
 
         body {
@@ -325,6 +361,32 @@
             transition: top 0.3s ease;  /* 添加過渡效果 */
         }
 
+        /* 修改字體相關的樣式 */
+        .practice-sheet th.no-zhuyin {
+            font-size: var(--title-font-size);
+        }
+
+        /* 修改下拉選單的樣式 */
+        #fontSelect {
+            border: 1px solid #ced4da;
+            background-color: white;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            cursor: pointer;
+        }
+
+        #fontSelect:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        #directionToggle {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #ced4da;
+            background-color: white;
+            border-radius: 0.25rem;
+        }
+
     </style>
 </head>
 <body>
@@ -334,21 +396,29 @@
             <h2 class="card-title text-center">中文字練習簿</h2>
             <div class="form-group">
                 <label for="chineseInput">請輸入要練習的中文字（一頁14字）：</label>
-                <div class="input-group">
-                    <input type="text" id="chineseInput" class="form-control" maxlength="14">
-                    <div class="input-group-append">
-                        <span class="input-group-text bg-white">
-                            <i id="warningIcon" class="fas fa-exclamation-circle text-danger" style="display: none;"></i>
-                        </span>
-                        <button id="directionToggle" class="btn btn-outline-secondary btn-sm" type="button" title="切換填充方向">
-                            <i class="fas fa-arrow-left"></i>
-                        </button>
+                <div class="d-flex align-items-center">
+                    <div class="input-group" style="width: 70%;">
+                        <input type="text" id="chineseInput" class="form-control" maxlength="14">
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-white">
+                                <i id="warningIcon" class="fas fa-exclamation-circle text-danger" style="display: none;"></i>
+                            </span>
+                        </div>
                     </div>
+                    <select id="fontSelect" class="form-control ml-2" style="width: 25%;">
+                        <option value="EduKai">教育部標準楷書</option>
+                        <option value="YungChuen">永傳體</option>
+                        <option value="Wansong">芫荽</option>
+                        <option value="SuiFeng">隨峰體</option>
+                    </select>
+                    <button id="directionToggle" class="btn btn-outline-secondary btn-sm ml-2" type="button" title="切換填充方向">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
                 </div>
             </div>
             <div class="form-group">
                 <div class="custom-control custom-checkbox d-inline-block mr-4">
-                    <input type="checkbox" class="custom-control-input" id="showZhuyin" checked>
+                    <input type="checkbox" class="custom-control-input" id="showZhuyin">
                     <label class="custom-control-label" for="showZhuyin">注音提示</label>
                 </div>
                 <div class="custom-control custom-checkbox d-inline-block mr-4">
@@ -407,6 +477,30 @@ function adjustImageSize(img) {
         img.parentElement.style.height = '600%';
     }
 }
+
+// 修改字體映射，添加顏色設定
+const fontMapping = {
+    'EduKai': {
+        normal: 'EduKai',
+        dotted: 'DottedEduKai',
+        fallbackColor: '#ccc'  // 當虛線字體不存在時使用的顏色
+    },
+    'YungChuen': {
+        normal: 'YungChuen',
+        dotted: 'DottedYungChuen',
+        fallbackColor: '#ccc'
+    },
+    'Wansong': {
+        normal: 'Wansong',
+        dotted: 'DottedWansong',
+        fallbackColor: '#ccc'
+    },
+    'SuiFeng': {
+        normal: 'SuiFeng',
+        dotted: 'DottedSuiFeng',
+        fallbackColor: '#ccc'
+    }
+};
 
 $(document).ready(function() {
     // 檢查輸入是否為中文字
@@ -482,12 +576,17 @@ $(document).ready(function() {
             }
         }
 
-        // 添加標題行
+        const selectedFont = $('#fontSelect').val();
+        const currentFont = fontMapping[selectedFont];
+
+        // 修改生成標題行的部分
         content += '<tr>';
         for (let i = 0; i < 14; i++) {
             const zhuyinClass = showZhuyin ? 'with-zhuyin' : 'no-zhuyin';
             const guidesClass = (!showZhuyin && showGuides) ? 'with-guides' : '';
-            content += `<th class="${zhuyinClass} ${guidesClass}"><div class="title-content">${processedInput[i] || ''}</div></th>`;
+            content += `<th class="${zhuyinClass} ${guidesClass}" style="${!showZhuyin ? `font-family: '${currentFont.normal}'` : ''}">
+                <div class="title-content">${processedInput[i] || ''}</div>
+            </th>`;
         }
         content += '</tr>';
 
@@ -514,7 +613,14 @@ $(document).ready(function() {
                 for (let col = 0; col < 14; col++) {
                     const guidesClass = showGuides ? 'with-guides' : '';
                     if (showDotted && row < 2 && processedInput[col]) {
-                        content += `<td class="${guidesClass}"><div class="dotted-char">${processedInput[col]}</div></td>`;
+                        content += `<td class="${guidesClass}">
+                            <div class="dotted-char" style="
+                                font-family: '${currentFont.dotted}', '${currentFont.normal}';
+                                color: ${currentFont.fallbackColor};
+                            ">
+                                ${processedInput[col]}
+                            </div>
+                        </td>`;
                     } else {
                         content += `<td class="${guidesClass}"></td>`;
                     }
@@ -522,13 +628,20 @@ $(document).ready(function() {
                 content += '</tr>';
             }
         } else {
-            // 如果沒有筆順���示，添加8行練習行
+            // 如果沒有筆順示，添加8行練習行
             for (let row = 0; row < 8; row++) {
                 content += '<tr>';
                 for (let col = 0; col < 14; col++) {
                     const guidesClass = showGuides ? 'with-guides' : '';
                     if (showDotted && row < 2 && processedInput[col]) {
-                        content += `<td class="${guidesClass}"><div class="dotted-char">${processedInput[col]}</div></td>`;
+                        content += `<td class="${guidesClass}">
+                            <div class="dotted-char" style="
+                                font-family: '${currentFont.dotted}', '${currentFont.normal}';
+                                color: ${currentFont.fallbackColor};
+                            ">
+                                ${processedInput[col]}
+                            </div>
+                        </td>`;
                     } else {
                         content += `<td class="${guidesClass}"></td>`;
                     }
@@ -594,6 +707,13 @@ $(document).ready(function() {
             $btn.html(originalText);
             $btn.prop('disabled', false);
         });
+    });
+
+    // 添加字體選擇的變更事件處理
+    $('#fontSelect').change(function() {
+        if (lastValidInput) {
+            generatePracticeSheet(lastValidInput);
+        }
     });
 });
 
