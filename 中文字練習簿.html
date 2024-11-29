@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>中文字練習簿</title>
+    <title>文藻美語-硬筆字練習簿</title>
     <!-- 引入Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <!-- 引入Font Awesome -->
@@ -42,7 +42,7 @@
         /* 添加虛線字體的對應版本 */
         @font-face {
             font-family: 'DottedEduKai';
-            src: url('fonts/虛線體國字.ttf') format('truetype');
+            src: url('fonts/教育部標準楷書_虛線.ttf') format('truetype');
         }
 
         @font-face {
@@ -147,15 +147,12 @@
             box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
         }
 
-        #warningIcon {
-            cursor: help;
-        }
-
         .practice-sheet table {
-            width: calc(100% - 40px);
+            width: 90%;
             border-collapse: separate;
             border-spacing: 0;
             table-layout: fixed;
+            margin: 0 auto;
         }
 
         .practice-sheet th,
@@ -295,15 +292,37 @@
 
         .watermark {
             position: absolute;
-            top: 20px;  /* 預設距離頂部的距離 */
-            right: 30px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
+            top: 20px;
+            font-family: 'EduKai', sans-serif;  /* 使用 EduKai 字體 */
+            font-size: 16px;
             color: #999;
             opacity: 0.8;
-            pointer-events: none;
+            pointer-events: auto;
             z-index: 1;
-            transition: top 0.3s ease;  /* 添加過渡效果 */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 5px;
+            width: 90%;
+            white-space: nowrap;  /* 防止換行 */
+        }
+
+        .watermark.left {
+            left: 30px;
+            text-align: left;
+            width: auto;  /* 讓寬度自適應內容 */
+        }
+
+        .watermark.center {
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: auto;  /* 讓寬度自適應內容 */
+        }
+
+        .watermark.right {
+            right: 30px;
+            text-align: right;
+            width: auto;  /* 讓寬度自適應內容 */
         }
 
         /* 修改字體相關的樣式 */
@@ -313,10 +332,12 @@
 
         /* 修改下拉選單的樣式 */
         #fontSelect {
+            padding: 0.2rem 0.5rem;
+            height: auto;
+            font-size: 0.9rem;
             border: 1px solid #ced4da;
-            background-color: white;
             border-radius: 0.25rem;
-            padding: 0.375rem 0.75rem;
+            background-color: white;
             cursor: pointer;
         }
 
@@ -326,10 +347,15 @@
         }
 
         #directionToggle {
-            padding: 0.375rem 0.75rem;
+            height: auto;
+            font-size: 0.9rem;
             border: 1px solid #ced4da;
             background-color: white;
-            border-radius: 0.25rem;
+            vertical-align: middle;
+        }
+
+        #directionToggle:hover {
+            background-color: #e9ecef;
         }
 
         /* 修改標題內容的定位 */
@@ -365,6 +391,27 @@
             box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
         }
 
+        /* 模板按鈕樣式 */
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        /* 修改輔助線下拉選單的樣式 */
+        #guideLineType {
+            padding: 0.2rem 0.5rem;
+            height: auto;
+            font-size: 0.9rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        #guideLineType:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
     </style>
     <!-- 在 head 中添加 jspdf 庫 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -373,27 +420,11 @@
 <div id="app">
     <div class="card">
         <div class="card-body">
-            <h2 class="card-title text-center">中文字練習簿</h2>
+            <h2 class="card-title text-center">文藻美語 硬筆字練習簿</h2>
             <div class="form-group">
-                <label for="chineseInput">請輸入要練習的中文字（每頁6字）：</label>
-                <div class="d-flex align-items-center">
-                    <div class="input-group" style="width: 70%;">
-                        <input type="text" id="chineseInput" class="form-control">
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-white">
-                                <i id="warningIcon" class="fas fa-exclamation-circle text-danger" style="display: none;"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <select id="fontSelect" class="form-control ml-2" style="width: 25%;">
-                        <option value="EduKai">教育部標準楷書</option>
-                        <option value="YungChuen">永傳體</option>
-                        <option value="Wansong">芫荽</option>
-                        <option value="SuiFeng">隨峰體</option>
-                    </select>
-                    <button id="directionToggle" class="btn btn-outline-secondary btn-sm ml-2" type="button" title="切換填充方向">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
+                <label for="chineseInput">請輸入要練習的中文字（每頁7字）：</label>
+                <div class="input-group">
+                    <textarea id="chineseInput" class="form-control" rows="3"></textarea>
                 </div>
             </div>
             <div class="form-group">
@@ -401,11 +432,19 @@
                     <input type="checkbox" class="custom-control-input" id="showStroke">
                     <label class="custom-control-label" for="showStroke">筆順顯示</label>
                 </div>
-                <div class="custom-control custom-checkbox d-inline-block mr-4">
-                    <input type="checkbox" class="custom-control-input" id="showGuides">
-                    <label class="custom-control-label" for="showGuides">輔助線</label>
-                </div>
-                <select id="dottedCount" class="form-control d-inline-block" style="width: 80px;">
+                <select id="guideLineType" class="form-control d-inline-block mr-4" style="width: 100px;">
+                    <option value="none">無輔助線</option>
+                    <option value="cross">十字輔助線</option>
+                    <option value="nine">九宮格線</option>
+                    <option value="star">米字線</option>
+                </select>
+                <select id="fontSelect" class="form-control d-inline-block mr-4" style="width: 100px;">
+                    <option value="EduKai">教育部標準楷書</option>
+                    <option value="SuiFeng">隨峰體</option>
+                    <option value="YungChuen">永傳體</option>
+                    <!-- <option value="Wansong">芫荽</option> -->
+                </select>
+                <select id="dottedCount" class="form-control d-inline-block mr-4" style="width: 80px;">
                     <option value="0">描0字</option>
                     <option value="1">描1字</option>
                     <option value="2">描2字</option>
@@ -414,6 +453,9 @@
                     <option value="5">描5字</option>
                     <option value="-1">描全部</option>
                 </select>
+                <button id="directionToggle" class="btn btn-outline-secondary btn-sm" type="button" title="切換填充方向" style="padding: 0.2rem 0.5rem;">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -422,6 +464,42 @@
         <button id="downloadButton" class="btn btn-success" style="width: 200px;">
             <i class="fas fa-download mr-2"></i>下載練習簿
         </button>
+    </div>
+</div>
+
+<!-- 在 app div 後面添加 modal -->
+<div class="modal fade" id="watermarkModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">自定義浮水印</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>選擇樣式</label>
+                    <select class="form-control" id="watermarkTemplate">
+                        <!-- 由 JavaScript 動態填入選項 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>自定義文字</label>
+                    <input type="text" class="form-control" id="watermarkText">
+                </div>
+                <div class="form-group">
+                    <label>對齊方式</label>
+                    <div class="btn-group d-flex" role="group">
+                        <!-- 由 JavaScript 動態填入按鈕 -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveWatermark">套用</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -434,8 +512,8 @@
 const CHARS_PER_PAGE = 7;      // 每頁字數改為7
 let isRightToLeft = true;      // 預設從右到左填充
 
-// ===== PDF 輸出設定 =====
-const PDF_SCALE = 0.9;        // PDF 輸出縮放比例 (0-1)
+// ===== PDF 出設定 =====
+const PDF_SCALE = 1;        // PDF 輸出縮放比例 (0-1)
 const PDF_MARGIN = 5;          // PDF 邊距 (單位: mm)
 const PDF_QUALITY = 4;         // PDF 輸出品質 (1-5)
 
@@ -478,6 +556,31 @@ const fontMapping = {
     }
 };
 
+// ===== 浮水印設定 =====
+const WATERMARK_TEMPLATES = [
+    {
+        id: 'wenzao',
+        name: '文藻美語+姓名',
+        text: '文藻美語　　　班級：_______________　　　姓名：_______________'
+    },
+    {
+        id: 'practice',
+        name: '國小年級班級',
+        text: '    學年度　　　　國小　　年級　　學期'
+    },
+    {
+        id: '硬筆字比賽練習',
+        name: '硬筆字比賽練習',
+        text: '硬筆字比賽練習'
+    }
+];
+
+const WATERMARK_POSITIONS = [
+    { value: 'left', icon: 'fa-align-left', label: '靠左對齊' },
+    { value: 'center', icon: 'fa-align-center', label: '置中對齊' },
+    { value: 'right', icon: 'fa-align-right', label: '靠右對齊' }
+];
+
 // 将 adjustImageSize 函数移到 jQuery ready 函数外部，作为全局函数
 function adjustImageSize(img) {
     console.log('圖載入成功：', img.src);
@@ -490,7 +593,7 @@ function adjustImageSize(img) {
     if (img.naturalWidth === 50) {  // 如果是 50x725 的圖片
         const scale = STROKE_IMG.scale50;
         img.style.width = `${scale * 100}%`;  // 寬度縮小
-        img.style.height = 'auto';  // 高度自動調整
+        img.style.height = 'auto';  // 高度自動調
         img.parentElement.style.height = 'auto';  // 格子高度自動調整
         
         // 添加置中樣式
@@ -519,29 +622,26 @@ $(document).ready(function() {
 
     let lastValidInput = ''; // 添加變數來儲存上一次有效的輸入
 
-    // 修改輸入框事件處
+    // 修改輸入框事件處理
     $('#chineseInput').on('input', function() {
-        const input = $(this).val();
-        if (input && !isChineseChar(input)) {
-            // 顯示警告圖標
-            $('#warningIcon').show().attr('title', '請輸入中文字');
-            // 如果有上一次有效的輸入，則使用它來生成練習簿
-            if (lastValidInput) {
-                $('.practice-sheet').remove();  // 清除所有現有的練習簿
-                generatePracticeSheet(lastValidInput);
-            }
+        let input = $(this).val();
+        
+        // 過濾非中文字符，但只用於生成練習簿
+        let filteredInput = input.split('').filter(char => {
+            const reg = /[\u4e00-\u9fa5]/;  // 只保留中文字符
+            return reg.test(char);
+        }).join('');
+
+        // 生成練習簿
+        if (filteredInput) {
+            lastValidInput = filteredInput;
+            $('.practice-sheet').remove();
+            generatePracticeSheet(filteredInput);
+            $('#downloadContainer').show();
         } else {
-            $('#warningIcon').hide();
-            if (input) {
-                lastValidInput = input; // 更新最後有效的輸入
-                $('.practice-sheet').remove();  // 清除所有現有的練習簿
-                generatePracticeSheet(input);
-            } else {
-                // 當輸入為空時
-                lastValidInput = '';
-                $('.practice-sheet').remove();  // 清除所有現有的練習簿
-                $('#downloadContainer').hide();
-            }
+            lastValidInput = '';
+            $('.practice-sheet').remove();
+            $('#downloadContainer').hide();
         }
     });
 
@@ -560,13 +660,13 @@ $(document).ready(function() {
         if (!input) return;
 
         const showStroke = $('#showStroke').is(':checked');
-        const showGuides = $('#showGuides').is(':checked');
+        const showGuides = $('#guideLineType').val() !== 'none';
         const dottedCount = parseInt($('#dottedCount').val());  // 改用 dottedCount
         
         const selectedFont = $('#fontSelect').val();
         const currentFont = fontMapping[selectedFont];
 
-        // 計算需要的��數
+        // 計算需要的欄數
         const charsPerPage = 7;
         const totalPages = Math.ceil(input.length / charsPerPage);
 
@@ -598,7 +698,7 @@ $(document).ready(function() {
 
             // 生成當前頁的內容
             let pageContent = `
-                <div class="watermark" style="top: ${showStroke ? '2px' : '20px'};">Wen Tzao</div>
+                ${generateWatermark(showStroke)}
                 <table>
             `;
 
@@ -683,8 +783,8 @@ $(document).ready(function() {
         return rowContent;
     }
 
-    // 修改核取方塊變更事件
-    $('#showStroke, #showGuides, #dottedCount').change(function() {
+    // 修改核取方塊變事件
+    $('#showStroke, #dottedCount').change(function() {
         if (lastValidInput) {
             $('.practice-sheet').remove();  // 清除所有現有的練習簿
             generatePracticeSheet(lastValidInput);
@@ -767,11 +867,88 @@ $(document).ready(function() {
             generatePracticeSheet(lastValidInput);
         }
     });
+
+    // 初始化浮水印設定
+    let watermarkSettings = {
+        text: WATERMARK_TEMPLATES[0].text,
+        position: 'right'
+    };
+
+    // 初始化模板選單
+    function initWatermarkModal() {
+        // 填入模板選項
+        const $templateSelect = $('#watermarkTemplate');
+        WATERMARK_TEMPLATES.forEach(template => {
+            $templateSelect.append(`<option value="${template.id}">${template.name}</option>`);
+        });
+
+        // 填入對齊按鈕
+        const $alignGroup = $('.btn-group');
+        WATERMARK_POSITIONS.forEach(pos => {
+            $alignGroup.append(`
+                <button type="button" class="btn btn-outline-secondary" data-position="${pos.value}" 
+                        title="${pos.label}">
+                    <i class="fas ${pos.icon}"></i>
+                </button>
+            `);
+        });
+
+        // 綁定模板選擇事件
+        $templateSelect.change(function() {
+            const selectedId = $(this).val();
+            const template = WATERMARK_TEMPLATES.find(t => t.id === selectedId);
+            $('#watermarkText').val(template.text);
+        });
+
+        // 綁定對齊按鈕事件
+        $('.btn-group .btn').click(function() {
+            $(this).addClass('active').siblings().removeClass('active');
+            watermarkSettings.position = $(this).data('position');
+        });
+    }
+
+    // 初始化 modal
+    initWatermarkModal();
+
+    // 修改保存設定的處理
+    $('#saveWatermark').click(function() {
+        watermarkSettings.text = $('#watermarkText').val();
+        $('#watermarkModal').modal('hide');
+        
+        if (lastValidInput) {
+            $('.practice-sheet').remove();
+            generatePracticeSheet(lastValidInput);
+        }
+    });
+
+    // 修改生成 watermark 的部分
+    function generateWatermark(showStroke) {
+        return `<div class="watermark ${watermarkSettings.position}" 
+                 style="top: ${showStroke ? '0px' : '20px'};">
+                 ${watermarkSettings.text}
+            </div>`;
+    }
+
+    // 添加 watermark 點擊事件
+    $(document).on('click', '.watermark', function() {
+        $('#watermarkText').val(watermarkSettings.text);
+        $('#watermarkPosition').val(watermarkSettings.position);
+        $('#watermarkModal').modal('show');
+    });
+
+    // 修改輔助線選擇的事件處理
+    $('#guideLineType').change(function() {
+        if (lastValidInput) {
+            $('.practice-sheet').remove();
+            generatePracticeSheet(lastValidInput);
+        }
+    });
 });
 
-// 修改生成格子的部分，添加實際的輔助線元素
+// 修改生成格子的部分，添加實際的輔線元素
 function generateGuideLines(cell, isHeader = false) {
-    if (!cell.hasClass('with-guides')) return;
+    const guideLineType = $('#guideLineType').val();
+    if (guideLineType === 'none') return;
     
     const color = isHeader ? GUIDE_LINE.headerColor : GUIDE_LINE.contentColor;
     const opacity = GUIDE_LINE.opacity;
@@ -786,29 +963,113 @@ function generateGuideLines(cell, isHeader = false) {
         'pointer-events': 'none'
     });
 
-    // 創建水平虛線
-    const horizontalLine = $('<div>').css({
-        'position': 'absolute',
-        'top': '50%',
-        'left': '0',
-        'width': '100%',
-        'height': '1px',
-        'border-top': `1px dashed ${color}`,
-        'opacity': opacity
-    });
+    switch (guideLineType) {
+        case 'cross':
+            // 十字輔助線
+            const horizontalLine = $('<div>').css({
+                'position': 'absolute',
+                'top': '50%',
+                'left': '0',
+                'width': '100%',
+                'height': '1px',
+                'border-top': `1px dashed ${color}`,
+                'opacity': opacity
+            });
 
-    // 創建垂直虛線
-    const verticalLine = $('<div>').css({
-        'position': 'absolute',
-        'top': '0',
-        'left': '50%',
-        'width': '1px',
-        'height': '100%',
-        'border-left': `1px dashed ${color}`,
-        'opacity': opacity
-    });
+            const verticalLine = $('<div>').css({
+                'position': 'absolute',
+                'top': '0',
+                'left': '50%',
+                'width': '1px',
+                'height': '100%',
+                'border-left': `1px dashed ${color}`,
+                'opacity': opacity
+            });
 
-    guideContainer.append(horizontalLine, verticalLine);
+            guideContainer.append(horizontalLine, verticalLine);
+            break;
+
+        case 'nine':
+            // 九宮格線
+            for (let i = 1; i < 3; i++) {
+                // 水平線
+                const hLine = $('<div>').css({
+                    'position': 'absolute',
+                    'top': `${i * 33.33}%`,
+                    'left': '0',
+                    'width': '100%',
+                    'height': '1px',
+                    'border-top': `1px dashed ${color}`,
+                    'opacity': opacity
+                });
+                
+                // 垂直線
+                const vLine = $('<div>').css({
+                    'position': 'absolute',
+                    'top': '0',
+                    'left': `${i * 33.33}%`,
+                    'width': '1px',
+                    'height': '100%',
+                    'border-left': `1px dashed ${color}`,
+                    'opacity': opacity
+                });
+                
+                guideContainer.append(hLine, vLine);
+            }
+            break;
+
+        case 'star':
+            // 米字線
+            // 十字線
+            const hLine = $('<div>').css({
+                'position': 'absolute',
+                'top': '50%',
+                'left': '0',
+                'width': '100%',
+                'height': '1px',
+                'border-top': `1px dashed ${color}`,
+                'opacity': opacity
+            });
+
+            const vLine = $('<div>').css({
+                'position': 'absolute',
+                'top': '0',
+                'left': '50%',
+                'width': '1px',
+                'height': '100%',
+                'border-left': `1px dashed ${color}`,
+                'opacity': opacity
+            });
+
+            // 對角線
+            const diagonal1 = $('<div>').css({
+                'position': 'absolute',
+                'top': '0',
+                'left': '0',
+                'width': '141.4%',  // √2 * 100%
+                'height': '1px',
+                'border-top': `1px dashed ${color}`,
+                'opacity': opacity,
+                'transform': 'rotate(45deg)',
+                'transform-origin': '0 0'
+            });
+
+            const diagonal2 = $('<div>').css({
+                'position': 'absolute',
+                'top': '0',
+                'right': '0',
+                'width': '141.4%',  // √2 * 100%
+                'height': '1px',
+                'border-top': `1px dashed ${color}`,
+                'opacity': opacity,
+                'transform': 'rotate(-45deg)',
+                'transform-origin': '100% 0'
+            });
+
+            guideContainer.append(hLine, vLine, diagonal1, diagonal2);
+            break;
+    }
+
     cell.append(guideContainer);
 }
 </script>
