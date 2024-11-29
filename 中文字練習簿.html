@@ -11,13 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <style>
         :root {
-            --title-font-size: 50px;
-            --zhuyin-font-size: 42px;
-        }
-
-        @font-face {
-            font-family: 'BpmfZihiKai';
-            src: url('fonts/字嗨注音標楷.ttf') format('truetype');
+            --title-font-size: 65px;
         }
 
         @font-face {
@@ -114,12 +108,12 @@
         }
         .practice-sheet {
             width: 100%;
-            max-width: 1000px;
+            max-width: 595px;
             margin: 20px auto;
             background: white;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            aspect-ratio: 1.4142857143 / 1;
+            aspect-ratio: 1 / 1.4142857143;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -158,54 +152,41 @@
         }
 
         .practice-sheet table {
-            width: 100%;
-            border-collapse: collapse;
+            width: calc(100% - 40px);
+            border-collapse: separate;
+            border-spacing: 0;
             table-layout: fixed;
         }
 
-        .practice-sheet th {
+        .practice-sheet th,
+        .practice-sheet td {
+            width: calc(100% / 7);
+            height: 0;
             padding: 0;
-            vertical-align: middle;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
             position: relative;
-            width: calc(100% / 14);
-            font-weight: normal;
+            border: 0.5px solid #dee2e6;
         }
 
-        .practice-sheet th::after {
-            display: none;  /* 移除預設的垂直線 */
+        .practice-sheet tr:last-child td {
+            border: 0.5px solid #dee2e6;
         }
 
-        .practice-sheet th::before {
+        .practice-sheet th:last-child,
+        .practice-sheet td:last-child {
+            border: 0.5px solid #dee2e6;
+        }
+
+        /* 修改 th 和 td 的基本樣式 */
+        .practice-sheet th::before,
+        .practice-sheet td:not(.stroke-cell)::before {
             content: '';
             display: block;
-            padding-top: calc(12 / 19 * 100%);
+            padding-top: 100%;  /* 保持正方形比例 */
         }
 
-        .practice-sheet th .title-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-top: 6%;
-        }
-
-        .practice-sheet td {
-            width: calc(100% / 14);
-            padding: 0;
-            border: 1px solid #dee2e6;
-            position: relative;
-        }
-
-        .practice-sheet td:not(.stroke-cell)::before {
-            content: "";
-            display: block;
-            padding-top: 100%;
+        /* 移除 stroke-cell 的 before 偽元素 */
+        .practice-sheet td.stroke-cell::before {
+            display: none;
         }
 
         #chineseInput {
@@ -213,16 +194,19 @@
         }
 
         .stroke-cell {
-            position: relative;
             padding: 0 !important;
             vertical-align: top;
             border: 1px solid #dee2e6;
+            height: auto;
         }
 
         .stroke-cell img {
             width: 100%;
             height: auto;
             display: block;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .stroke-row {
@@ -238,45 +222,6 @@
         .practice-sheet td.with-guides,
         .practice-sheet th.with-guides {
             position: relative;
-        }
-
-        /* 修改有注音和無注音時的樣式 */
-        .practice-sheet th.with-zhuyin {
-            font-family: 'BpmfZihiKai', sans-serif;
-            font-size: var(--zhuyin-font-size);
-        }
-
-        .practice-sheet th.with-zhuyin::before {
-            content: '';
-            display: block;
-            padding-top: calc(12 / 19 * 100%);  /* 注音字體用較扁的格子 */
-        }
-
-        .practice-sheet th.no-zhuyin {
-            font-family: 'EduKai', sans-serif;
-            font-size: var(--title-font-size);
-        }
-
-        .practice-sheet th.no-zhuyin::before {
-            content: '';
-            display: block;
-            padding-top: 100%;  /* 無注音字體用正方形格子 */
-        }
-
-        /* 修改垂直線的顯示 */
-        .practice-sheet th.with-zhuyin::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: calc(12 / 19 * 100%);
-            width: 1px;
-            height: 100%;
-            background-color: #dee2e6;
-            display: block;
-        }
-
-        .practice-sheet th.no-zhuyin::after {
-            display: none;
         }
 
         /* 添加虛線字的樣式 */
@@ -298,7 +243,7 @@
             justify-content: center;
         }
 
-        /* 修改滾動條樣式，改為 Mac 風格 */
+        /* 改滾動條樣式，改為 Mac 風格 */
         ::-webkit-scrollbar {
             width: 9px;  /* 稍微細一點 */
         }
@@ -345,7 +290,7 @@
 
         /* 添加水印樣式 */
         .practice-sheet {
-            position: relative;  /* 確保絕對定位的子元素能夠相對於它定位 */
+            position: relative;  /* 確保絕對定位的子元能夠相對於它定位 */
         }
 
         .watermark {
@@ -387,7 +332,42 @@
             border-radius: 0.25rem;
         }
 
+        /* 修改標題內容的定位 */
+        .practice-sheet th .title-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--title-font-size);
+        }
+
+        .practice-sheet th {
+            font-weight: normal;  /* 添加這行來移除粗體 */
+        }
+
+        /* 添加描字數量下拉選單的樣式 */
+        #dottedCount {
+            padding: 0.2rem 0.5rem;
+            height: auto;
+            font-size: 0.9rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        #dottedCount:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
     </style>
+    <!-- 在 head 中添加 jspdf 庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -395,10 +375,10 @@
         <div class="card-body">
             <h2 class="card-title text-center">中文字練習簿</h2>
             <div class="form-group">
-                <label for="chineseInput">請輸入要練習的中文字（一頁14字）：</label>
+                <label for="chineseInput">請輸入要練習的中文字（每頁6字）：</label>
                 <div class="d-flex align-items-center">
                     <div class="input-group" style="width: 70%;">
-                        <input type="text" id="chineseInput" class="form-control" maxlength="14">
+                        <input type="text" id="chineseInput" class="form-control">
                         <div class="input-group-append">
                             <span class="input-group-text bg-white">
                                 <i id="warningIcon" class="fas fa-exclamation-circle text-danger" style="display: none;"></i>
@@ -418,10 +398,6 @@
             </div>
             <div class="form-group">
                 <div class="custom-control custom-checkbox d-inline-block mr-4">
-                    <input type="checkbox" class="custom-control-input" id="showZhuyin">
-                    <label class="custom-control-label" for="showZhuyin">注音提示</label>
-                </div>
-                <div class="custom-control custom-checkbox d-inline-block mr-4">
                     <input type="checkbox" class="custom-control-input" id="showStroke">
                     <label class="custom-control-label" for="showStroke">筆順顯示</label>
                 </div>
@@ -429,17 +405,19 @@
                     <input type="checkbox" class="custom-control-input" id="showGuides">
                     <label class="custom-control-label" for="showGuides">輔助線</label>
                 </div>
-                <div class="custom-control custom-checkbox d-inline-block">
-                    <input type="checkbox" class="custom-control-input" id="showDotted">
-                    <label class="custom-control-label" for="showDotted">描字練習</label>
-                </div>
+                <select id="dottedCount" class="form-control d-inline-block" style="width: 80px;">
+                    <option value="0">描0字</option>
+                    <option value="1">描1字</option>
+                    <option value="2">描2字</option>
+                    <option value="3">描3字</option>
+                    <option value="4">描4字</option>
+                    <option value="5">描5字</option>
+                    <option value="-1">描全部</option>
+                </select>
             </div>
         </div>
     </div>
 
-    <div id="practiceSheet" class="practice-sheet" style="display: none;">
-        <!-- 練習簿內容將由 JavaScript 動生成 -->
-    </div>
     <div class="text-center mt-3" id="downloadContainer" style="display: none;">
         <button id="downloadButton" class="btn btn-success" style="width: 200px;">
             <i class="fas fa-download mr-2"></i>下載練習簿
@@ -452,9 +430,57 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
+// ===== 頁面配置 =====
+const CHARS_PER_PAGE = 7;      // 每頁字數改為7
+let isRightToLeft = true;      // 預設從右到左填充
+
+// ===== PDF 輸出設定 =====
+const PDF_SCALE = 0.9;        // PDF 輸出縮放比例 (0-1)
+const PDF_MARGIN = 5;          // PDF 邊距 (單位: mm)
+const PDF_QUALITY = 4;         // PDF 輸出品質 (1-5)
+
+// ===== 筆順圖片設定 =====
+const STROKE_IMG = {
+    standardWidth: 95,         // 標準圖片寬度
+    standardHeight: 725,       // 標準圖片高度
+    scale50: 25/95,           // 50px 寬圖片縮放比例
+    scaleNormal: 0.5          // 一般圖片縮放比例
+};
+
+// ===== 輔助線設定 =====
+const GUIDE_LINE = {
+    headerColor: '#666',       // 標題格輔助線顏色
+    contentColor: '#ccc',      // 內容格輔助線顏色
+    opacity: 0.4              // 輔助線透明度
+};
+
+// ===== 字體映射 =====
+const fontMapping = {
+    'EduKai': {
+        normal: 'EduKai',
+        dotted: 'DottedEduKai',
+        fallbackColor: '#eee'
+    },
+    'YungChuen': {
+        normal: 'YungChuen',
+        dotted: 'DottedYungChuen',
+        fallbackColor: '#eee'
+    },
+    'Wansong': {
+        normal: 'Wansong',
+        dotted: 'DottedWansong',
+        fallbackColor: '#eee'
+    },
+    'SuiFeng': {
+        normal: 'SuiFeng',
+        dotted: 'DottedSuiFeng',
+        fallbackColor: '#eee'
+    }
+};
+
 // 将 adjustImageSize 函数移到 jQuery ready 函数外部，作为全局函数
 function adjustImageSize(img) {
-    console.log('圖片載入成功：', img.src);
+    console.log('圖載入成功：', img.src);
     console.log('原始尺寸：', img.naturalWidth, 'x', img.naturalHeight);
     
     // 標準尺寸為 95x725
@@ -462,45 +488,27 @@ function adjustImageSize(img) {
     const standardHeight = 725;
     
     if (img.naturalWidth === 50) {  // 如果是 50x725 的圖片
-        const scale = 50/95;  // 計算縮放比例
+        const scale = STROKE_IMG.scale50;
         img.style.width = `${scale * 100}%`;  // 寬度縮小
-        img.style.height = `${scale * 100}%`;  // 高度縮小
-        img.parentElement.style.height = `${scale * 600}%`;  // 調整格子高度
+        img.style.height = 'auto';  // 高度自動調整
+        img.parentElement.style.height = 'auto';  // 格子高度自動調整
         
-        // 添加置樣式
+        // 添加置中樣式
         img.style.position = 'relative';
         img.style.left = '50%';
         img.style.transform = 'translateX(-50%)';
     } else {
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.parentElement.style.height = '600%';
+        const scale = STROKE_IMG.scaleNormal;
+        img.style.width = `${scale * 100}%`;
+        img.style.height = 'auto';  // 高度自動調整
+        img.parentElement.style.height = 'auto';  // 格子高度自動調整
+        
+        // 添加置中樣式
+        img.style.position = 'relative';
+        img.style.left = '50%';
+        img.style.transform = 'translateX(-50%)';
     }
 }
-
-// 修改字體映射，添加顏色設定
-const fontMapping = {
-    'EduKai': {
-        normal: 'EduKai',
-        dotted: 'DottedEduKai',
-        fallbackColor: '#ccc'  // 當虛線字體不存在時使用的顏色
-    },
-    'YungChuen': {
-        normal: 'YungChuen',
-        dotted: 'DottedYungChuen',
-        fallbackColor: '#ccc'
-    },
-    'Wansong': {
-        normal: 'Wansong',
-        dotted: 'DottedWansong',
-        fallbackColor: '#ccc'
-    },
-    'SuiFeng': {
-        normal: 'SuiFeng',
-        dotted: 'DottedSuiFeng',
-        fallbackColor: '#ccc'
-    }
-};
 
 $(document).ready(function() {
     // 檢查輸入是否為中文字
@@ -511,207 +519,251 @@ $(document).ready(function() {
 
     let lastValidInput = ''; // 添加變數來儲存上一次有效的輸入
 
-    // 添加方向控制變數
-    let isRightToLeft = true; // 預設從右到左填充
-
-    // 修改輸入框事件處理
+    // 修改輸入框事件處
     $('#chineseInput').on('input', function() {
         const input = $(this).val();
         if (input && !isChineseChar(input)) {
-            // 顯示警告圖標，但隱藏練習簿
+            // 顯示警告圖標
             $('#warningIcon').show().attr('title', '請輸入中文字');
             // 如果有上一次有效的輸入，則使用它來生成練習簿
             if (lastValidInput) {
+                $('.practice-sheet').remove();  // 清除所有現有的練習簿
                 generatePracticeSheet(lastValidInput);
             }
         } else {
             $('#warningIcon').hide();
             if (input) {
                 lastValidInput = input; // 更新最後有效的輸入
+                $('.practice-sheet').remove();  // 清除所有現有的練習簿
                 generatePracticeSheet(input);
             } else {
                 // 當輸入為空時
                 lastValidInput = '';
-                $('#practiceSheet').hide();
+                $('.practice-sheet').remove();  // 清除所有現有的練習簿
                 $('#downloadContainer').hide();
             }
         }
     });
 
-    // 添加切換按鈕事件
+    // 修改切換按鈕事件
     $('#directionToggle').click(function() {
         isRightToLeft = !isRightToLeft;
         $(this).find('i').toggleClass('fa-arrow-left fa-arrow-right');
         if (lastValidInput) {
+            $('.practice-sheet').remove();  // 清除所有現有的練習簿
             generatePracticeSheet(lastValidInput);
         }
     });
 
-    // 修改生成練習簿的函數，接受輸入參數
+    // 修改生成練習簿的函數，接輸入參數
     function generatePracticeSheet(input) {
         if (!input) return;
 
-        const showZhuyin = $('#showZhuyin').is(':checked');
         const showStroke = $('#showStroke').is(':checked');
         const showGuides = $('#showGuides').is(':checked');
-        const showDotted = $('#showDotted').is(':checked');
-
-        // 顯示練習簿區域
-        $('#practiceSheet').show();
-
-        // 生成練習簿內容，根據筆順顯示狀態設置水印的 top 值
-        let content = `<div class="watermark" style="top: ${showStroke ? '2px' : '20px'}; font-family: 'DFKai-SB', '標楷體';">Wen Tzao Dajia School</div><table>`;
-
-        // 根據方向處理輸入文字
-        let processedInput = new Array(14).fill('');  // 創建一個長度為14的空陣列
-        if (isRightToLeft) {
-            // 從右到左填充：將文字從右邊開始填入
-            for (let i = 0; i < input.length && i < 14; i++) {
-                processedInput[13 - i] = input[i];  // 從最右邊（索引13）開始填入
-            }
-        } else {
-            // 從左到右填充：將文字從左邊開始填入
-            for (let i = 0; i < input.length && i < 14; i++) {
-                processedInput[i] = input[i];
-            }
-        }
-
+        const dottedCount = parseInt($('#dottedCount').val());  // 改用 dottedCount
+        
         const selectedFont = $('#fontSelect').val();
         const currentFont = fontMapping[selectedFont];
 
-        // 修改生成標題行的部分
-        content += '<tr>';
-        for (let i = 0; i < 14; i++) {
-            const zhuyinClass = showZhuyin ? 'with-zhuyin' : 'no-zhuyin';
-            const guidesClass = (!showZhuyin && showGuides) ? 'with-guides' : '';
-            content += `<th class="${zhuyinClass} ${guidesClass}" style="${!showZhuyin ? `font-family: '${currentFont.normal}'` : ''}">
-                <div class="title-content">${processedInput[i] || ''}</div>
-            </th>`;
-        }
-        content += '</tr>';
+        // 計算需要的��數
+        const charsPerPage = 7;
+        const totalPages = Math.ceil(input.length / charsPerPage);
 
-        // 如果勾選了筆順顯示，添加筆順圖片行
-        if (showStroke) {
-            content += '<tr class="stroke-row">';
-            for (let i = 0; i < 14; i++) {
-                if (processedInput[i]) {
-                    content += `<td class="stroke-cell">
-                        <img src="中文字筆順/${processedInput[i]}.png" 
-                             alt="${processedInput[i]}筆順"
-                             onerror="this.style.display='none'; console.log('圖片載入失敗：${processedInput[i]}.png');"
-                             onload="adjustImageSize(this);">
-                    </td>`;
-                } else {
-                    content += '<td></td>';
+        // 移除原有的練習簿
+        $('#practiceSheet').remove();
+
+        // 為每一頁創建獨立的練習簿
+        for (let page = 0; page < totalPages; page++) {
+            // 處理當前頁的文字
+            let currentPageChars = new Array(charsPerPage).fill('');
+            const pageStart = page * charsPerPage;
+            const pageEnd = Math.min((page + 1) * charsPerPage, input.length);
+            
+            // 根據方向填充當前頁的文字
+            if (isRightToLeft) {
+                for (let i = 0; i < (pageEnd - pageStart); i++) {
+                    currentPageChars[6 - i] = input[pageStart + i];
+                }
+            } else {
+                for (let i = 0; i < (pageEnd - pageStart); i++) {
+                    currentPageChars[i] = input[pageStart + i];
                 }
             }
-            content += '</tr>';
 
-            // 添加練習
-            for (let row = 0; row < 2; row++) {
-                content += '<tr>';
-                for (let col = 0; col < 14; col++) {
-                    const guidesClass = showGuides ? 'with-guides' : '';
-                    if (showDotted && row < 2 && processedInput[col]) {
-                        content += `<td class="${guidesClass}">
-                            <div class="dotted-char" style="
-                                font-family: '${currentFont.dotted}', '${currentFont.normal}';
-                                color: ${currentFont.fallbackColor};
-                            ">
-                                ${processedInput[col]}
-                            </div>
+            // 創建新的練習簿 div
+            const $practiceSheet = $('<div>')
+                .addClass('practice-sheet')
+                .css('margin-bottom', '40px');
+
+            // 生成當前頁的內容
+            let pageContent = `
+                <div class="watermark" style="top: ${showStroke ? '2px' : '20px'};">Wen Tzao</div>
+                <table>
+            `;
+
+            // 添加標題行
+            pageContent += '<tr>';
+            for (let i = 0; i < charsPerPage; i++) {
+                const guidesClass = showGuides ? 'with-guides' : '';
+                pageContent += `<th class="${guidesClass}" style="font-family: '${currentFont.normal}'; font-size: var(--title-font-size)">
+                    <div class="title-content">${currentPageChars[i] || ''}</div>
+                </th>`;
+            }
+            pageContent += '</tr>';
+
+            // 在 generatePracticeSheet 函數中，修改筆順顯示部分
+            if (showStroke) {
+                pageContent += '<tr class="stroke-row">';
+                for (let i = 0; i < charsPerPage; i++) {
+                    if (currentPageChars[i]) {
+                        pageContent += `<td class="stroke-cell">
+                            <img src="中文字筆順/${currentPageChars[i]}.png" 
+                                 alt="${currentPageChars[i]}筆順"
+                                 onerror="this.style.display='none'; console.log('圖片載入失敗：${currentPageChars[i]}.png');"
+                                 onload="adjustImageSize(this);">
                         </td>`;
                     } else {
-                        content += `<td class="${guidesClass}"></td>`;
+                        pageContent += '<td></td>';
                     }
                 }
-                content += '</tr>';
-            }
-        } else {
-            // 如果沒有筆順示，添加8行練習行
-            for (let row = 0; row < 8; row++) {
-                content += '<tr>';
-                for (let col = 0; col < 14; col++) {
-                    const guidesClass = showGuides ? 'with-guides' : '';
-                    if (showDotted && row < 2 && processedInput[col]) {
-                        content += `<td class="${guidesClass}">
-                            <div class="dotted-char" style="
-                                font-family: '${currentFont.dotted}', '${currentFont.normal}';
-                                color: ${currentFont.fallbackColor};
-                            ">
-                                ${processedInput[col]}
-                            </div>
-                        </td>`;
-                    } else {
-                        content += `<td class="${guidesClass}"></td>`;
-                    }
-                }
-                content += '</tr>';
-            }
-        }
-        content += '</table>';
+                pageContent += '</tr>';
 
-        $('#practiceSheet').html(content);
+                // 添加6行練習行（改為6行）
+                for (let row = 0; row < 6; row++) {
+                    pageContent += generatePracticeRow(currentPageChars, showGuides, dottedCount, currentFont, row);
+                }
+            } else {
+                // 添加8行練習行
+                for (let row = 0; row < 8; row++) {
+                    pageContent += generatePracticeRow(currentPageChars, showGuides, dottedCount, currentFont, row);
+                }
+            }
+
+            pageContent += '</table>';
+            
+            // 將內容添加到練習簿
+            $practiceSheet.html(pageContent);
+            
+            // 將練習簿添加到頁面
+            $('#downloadContainer').before($practiceSheet);
+        }
+
         $('#downloadContainer').show();
 
         // 在生成表格後，為每個帶有 with-guides 類的格子添加輔助線
-        $('#practiceSheet').find('td.with-guides, th.with-guides').each(function() {
+        $('.practice-sheet').find('td.with-guides, th.with-guides').each(function() {
             generateGuideLines($(this), $(this).is('th'));
         });
     }
 
+    // 添加生成練習行的輔助函
+    function generatePracticeRow(chars, showGuides, dottedCount, currentFont, rowIndex) {
+        let rowContent = '<tr>';
+        for (let col = 0; col < chars.length; col++) {
+            const guidesClass = showGuides ? 'with-guides' : '';
+            if (dottedCount === -1 || rowIndex < dottedCount) {  // -1 表示全部描字
+                if (chars[col]) {
+                    rowContent += `<td class="${guidesClass}">
+                        <div class="dotted-char" style="
+                            font-family: '${currentFont.dotted}', '${currentFont.normal}';
+                            color: ${currentFont.fallbackColor};
+                        ">
+                            ${chars[col]}
+                        </div>
+                    </td>`;
+                } else {
+                    rowContent += `<td class="${guidesClass}"></td>`;
+                }
+            } else {
+                rowContent += `<td class="${guidesClass}"></td>`;
+            }
+        }
+        rowContent += '</tr>';
+        return rowContent;
+    }
+
     // 修改核取方塊變更事件
-    $('#showZhuyin, #showStroke, #showGuides, #showDotted').change(function() {
+    $('#showStroke, #showGuides, #dottedCount').change(function() {
         if (lastValidInput) {
+            $('.practice-sheet').remove();  // 清除所有現有的練習簿
             generatePracticeSheet(lastValidInput);
         }
     });
 
     // 修改下載按鈕事件處理
-    $('#downloadButton').click(function() {
-        // 顯示載入中的提示
+    $('#downloadButton').click(async function() {
         const $btn = $(this);
         const originalText = $btn.html();
         $btn.html('<i class="fas fa-spinner fa-spin mr-2"></i>處理中...');
         $btn.prop('disabled', true);
 
-        // 獲取當前日期時間
-        const now = new Date();
-        const dateString = now.getFullYear() +
-            String(now.getMonth() + 1).padStart(2, '0') +
-            String(now.getDate()).padStart(2, '0') +
-            String(now.getHours()).padStart(2, '0') +
-            String(now.getMinutes()).padStart(2, '0');
+        try {
+            const now = new Date();
+            const dateString = now.getFullYear() +
+                String(now.getMonth() + 1).padStart(2, '0') +
+                String(now.getDate()).padStart(2, '0') +
+                String(now.getHours()).padStart(2, '0') +
+                String(now.getMinutes()).padStart(2, '0') +
+                String(now.getSeconds()).padStart(2, '0');
 
-        // 獲取輸入內容
-        const input = $('#chineseInput').val();
+            const input = $('#chineseInput').val();
 
-        // 將練習簿轉換為圖片
-        html2canvas(document.querySelector("#practiceSheet"), {
-            scale: 2,
-            backgroundColor: 'white',
-            logging: false,
-        }).then(canvas => {
-            // 創建下載連結
-            const link = document.createElement('a');
-            link.download = `${input}_${dateString}.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
+            // 創建 PDF 文檔，使用更精確的尺寸
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+                compress: false
+            });
+            
+            const practiceSheets = $('.practice-sheet');
+            
+            for (let i = 0; i < practiceSheets.length; i++) {
+                if (i > 0) {
+                    pdf.addPage();
+                }
 
-            // 恢復按鈕狀態
+                const canvas = await html2canvas(practiceSheets[i], {
+                    scale: PDF_QUALITY,
+                    backgroundColor: 'white',
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true,
+                    letterRendering: true,
+                });
+
+                // ✨ 調整這裡的數值來改變整體大小和位置
+                const scale = PDF_SCALE;
+                const margin = PDF_MARGIN;
+                const imgWidth = 210 * scale;  // A4 寬度 * 縮放比例
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                // 修改置中的位置計算
+                const x = (210 - imgWidth) / 2;  // 移除 margin
+                const y = (297 - imgHeight) / 2;  // 移除 margin
+
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight, undefined, 'FAST');
+            }
+
+            pdf.save(`${input}_${dateString}.pdf`);
+
             $btn.html(originalText);
             $btn.prop('disabled', false);
-        }).catch(error => {
+        } catch (error) {
             console.error('Error:', error);
             alert('下載失敗，請稍後再試');
             $btn.html(originalText);
             $btn.prop('disabled', false);
-        });
+        }
     });
 
-    // 添加字體選擇的變更事件處理
+    // 修改字體選擇的變更事件處理
     $('#fontSelect').change(function() {
         if (lastValidInput) {
+            $('.practice-sheet').remove();  // 清除所有現有的練習簿
             generatePracticeSheet(lastValidInput);
         }
     });
@@ -721,8 +773,8 @@ $(document).ready(function() {
 function generateGuideLines(cell, isHeader = false) {
     if (!cell.hasClass('with-guides')) return;
     
-    const color = isHeader ? '#666' : '#ccc';
-    const opacity = 0.4;
+    const color = isHeader ? GUIDE_LINE.headerColor : GUIDE_LINE.contentColor;
+    const opacity = GUIDE_LINE.opacity;
     
     // 創建輔助線容器
     const guideContainer = $('<div>').css({
