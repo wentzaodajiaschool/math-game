@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>文藻美語-硬筆字練習簿</title>
+    <title>文藻美語-硬筆字練習</title>
     <!-- 引入Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <!-- 引入Font Awesome -->
@@ -442,7 +442,7 @@
 <div id="app">
     <div class="card">
         <div class="card-body">
-            <h2 class="card-title text-center">文藻美語 硬筆字練習簿</h2>
+            <h2 class="card-title text-center">文藻美語 硬筆字練習</h2>
             <div class="form-group">
                 <label for="chineseInput">請輸入要練習的中文字（每頁7字）：</label>
                 <div class="input-group">
@@ -484,7 +484,7 @@
 
     <div class="text-center mt-3" id="downloadContainer" style="display: none;">
         <button id="downloadButton" class="btn btn-success" style="width: 200px;">
-            <i class="fas fa-download mr-2"></i>下載練習簿
+            <i class="fas fa-download mr-2"></i>下載練習
         </button>
     </div>
 </div>
@@ -562,7 +562,7 @@ const CHARS_PER_PAGE = 7;      // 每頁字數改為7
 let isRightToLeft = true;      // 預設從右到左填充
 
 // ===== PDF 出設定 =====
-const PDF_SCALE = 1;        // PDF 輸出縮放比例 (0-1)
+const PDF_SCALE = 0.95;        // PDF 輸出縮放比例 (0-1)
 const PDF_MARGIN = 5;          // PDF 邊距 (單位: mm)
 const PDF_QUALITY = 4;         // PDF 輸出品質 (1-5)
 
