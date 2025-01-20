@@ -124,9 +124,9 @@
             background-color: transparent;
         }
         
-        .form-control {
+        /* .form-control {
             border-right: none;
-        }
+        } */
 
         .form-control:focus {
             box-shadow: none;
@@ -434,6 +434,114 @@
             color: #6c757d !important;
         }
 
+        /* 修改生字顯示相關樣式 */
+        .word-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px;
+            margin: 0 -5px;
+        }
+
+        .word-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            background-color: #007bff;  /* 預設為藍色（選中狀態） */
+            color: white;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .word-chip.deselected {
+            background-color: #e9ecef;  /* 取消選擇時變為灰色 */
+            color: #333;
+        }
+
+        .lesson-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .lesson-item:last-child {
+            border-bottom: none;
+        }
+
+        .lesson-item label {
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .lesson-item input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        /* 修改課文顯示相關樣式 */
+        .lesson-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 0 -5px;
+        }
+
+        .lesson-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background-color: #e9ecef;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .lesson-chip.selected {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .lesson-chip:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* 修改 Modal 相關樣式 */
+        .modal-dialog.modal-lg {
+            max-width: 800px;
+        }
+
+        .modal-body {
+            padding: 1rem;
+        }
+
+        .modal-body .form-control {
+            font-size: 0.9rem;
+        }
+
+        /* 修改下拉選單寬度 */
+        .form-row > .col-sm-4 {
+            padding: 0 15px;  /* 恢復原本的 padding */
+        }
+
+        #semesterSelect, #gradeSelect, #versionSelect {
+            width: 100%;  /* 使用完整寬度 */
+        }
+
+        #selectAllLessons {
+            margin-left: 10px;
+        }
+
     </style>
     <!-- 在 head 中添加 jspdf 庫 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -447,6 +555,11 @@
                 <label for="chineseInput">請輸入要練習的中文字（每頁7字）：</label>
                 <div class="input-group">
                     <textarea id="chineseInput" class="form-control" rows="3"></textarea>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="openLessonModal">
+                            <i class="fas fa-book"></i> 選擇課文
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -520,6 +633,59 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-primary" id="saveWatermark">套用</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 課文選擇 Modal -->
+<div class="modal fade" id="lessonModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">選擇課文生字</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row mb-3">
+                    <div class="col-sm-4">
+                        <select class="form-control" id="semesterSelect">
+                            <option value="">選擇學期</option>
+                            <option value="上學期">上學期</option>
+                            <option value="下學期">下學期</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select class="form-control" id="gradeSelect">
+                            <option value="">選擇年級</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select class="form-control" id="versionSelect">
+                            <option value="">選擇版本</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <button class="btn btn-outline-secondary btn-sm" id="selectAllLessons">
+                        <i class="fas fa-check-square"></i> 全選課文
+                    </button>
+                </div>
+                <div class="lesson-chips mb-3">
+                    <!-- 課文清單將由 JavaScript 動態生成 -->
+                </div>
+                <div class="selected-words mt-3">
+                    <h6>已選擇的生字：</h6>
+                    <div class="word-chips">
+                        <!-- 生字將由 JavaScript 動態生成 -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="applyWords">填入生字</button>
             </div>
         </div>
     </div>
@@ -663,6 +829,291 @@ function adjustImageSize(img) {
 }
 
 $(document).ready(function() {
+    // 添加課文選擇相關的變數
+    let wordsData = null;
+    let selectedWords = new Set();
+    let selectedLessons = new Set();
+    let isFirstModalOpen = true;  // 添加變數追蹤是否為第一次打開
+
+    // 載入生字資料
+    $.getJSON('words_details.json', function(data) {
+        wordsData = data;
+        initializeLessonSelectors();
+    });
+
+    // 初始化選擇器
+    function initializeLessonSelectors() {
+        const semesterSelect = $('#semesterSelect');
+        const currentSemester = semesterSelect.val();  // 保存當前選擇
+        
+        // 清空現有選項
+        semesterSelect.empty().append('<option value="">選擇學期</option>');
+        
+        // 添加學期選項
+        semesterSelect.append(`
+            <option value="上學期" ${currentSemester === "上學期" ? 'selected' : ''}>上學期</option>
+            <option value="下學期" ${currentSemester === "下學期" ? 'selected' : ''}>下學期</option>
+        `);
+
+        // 如果有之前的選擇，觸發 change 事件以更新其他選單
+        if (currentSemester) {
+            semesterSelect.trigger('change');
+        }
+    }
+
+    // 學期選擇變更事件
+    $('#semesterSelect').change(function() {
+        const semester = $(this).val();
+        const gradeSelect = $('#gradeSelect');
+        const currentGrade = gradeSelect.val();  // 保存當前選擇
+        
+        // 清空年級和版本選擇
+        gradeSelect.empty().append('<option value="">選擇年級</option>');
+        $('#versionSelect').empty().append('<option value="">選擇版本</option>');
+        
+        if (semester && wordsData[semester]) {
+            Object.keys(wordsData[semester]).forEach(grade => {
+                gradeSelect.append(`
+                    <option value="${grade}" ${grade === currentGrade ? 'selected' : ''}>
+                        ${grade}年級
+                    </option>
+                `);
+            });
+            
+            // 如果有之前的選擇，觸發 change 事件
+            if (currentGrade) {
+                gradeSelect.trigger('change');
+            }
+        }
+        
+        updateLessonList();
+    });
+
+    // 年級選擇變更事件
+    $('#gradeSelect').change(function() {
+        const semester = $('#semesterSelect').val();
+        const grade = $(this).val();
+        const versionSelect = $('#versionSelect');
+        const currentVersion = versionSelect.val();  // 保存當前選擇
+        
+        versionSelect.empty().append('<option value="">選擇版本</option>');
+        
+        if (semester && grade && wordsData[semester][grade]) {
+            Object.keys(wordsData[semester][grade]).forEach(version => {
+                versionSelect.append(`
+                    <option value="${version}" ${version === currentVersion ? 'selected' : ''}>
+                        ${version}
+                    </option>
+                `);
+            });
+            
+            // 如果有之前的選擇，觸發 change 事件
+            if (currentVersion) {
+                versionSelect.trigger('change');
+            }
+        }
+        
+        updateLessonList();
+    });
+
+    // 版本選擇變更事件
+    $('#versionSelect').change(function() {
+        updateLessonList();
+    });
+
+    // 更新課文列表
+    function updateLessonList() {
+        const semester = $('#semesterSelect').val();
+        const grade = $('#gradeSelect').val();
+        const version = $('#versionSelect').val();
+        const lessonChips = $('.lesson-chips');
+        
+        lessonChips.empty();
+        
+        if (semester && grade && version) {
+            const lessons = wordsData[semester][grade][version];
+            Object.entries(lessons).forEach(([lessonNum, lessonData]) => {
+                const isSelected = selectedLessons.has(`${semester}-${grade}-${version}-${lessonNum}`);
+                lessonChips.append(`
+                    <div class="lesson-chip ${isSelected ? 'selected' : ''}"
+                         data-semester="${semester}"
+                         data-grade="${grade}"
+                         data-version="${version}"
+                         data-lesson="${lessonNum}">
+                        第 ${lessonNum} 課：${lessonData.title}
+                    </div>
+                `);
+            });
+        }
+    }
+
+    // 處理課文選擇
+    $(document).on('click', '.lesson-chip', function() {
+        const $chip = $(this);
+        const semester = $chip.data('semester');
+        const grade = $chip.data('grade');
+        const version = $chip.data('version');
+        const lesson = $chip.data('lesson');
+        const lessonKey = `${semester}-${grade}-${version}-${lesson}`;
+        
+        if ($chip.hasClass('selected')) {
+            $chip.removeClass('selected');
+            selectedLessons.delete(lessonKey);
+        } else {
+            $chip.addClass('selected');
+            selectedLessons.add(lessonKey);
+        }
+        
+        updateSelectedWords();
+    });
+
+    // 處理全選按鈕
+    $('#selectAllLessons').click(function() {
+        const semester = $('#semesterSelect').val();
+        const grade = $('#gradeSelect').val();
+        const version = $('#versionSelect').val();
+        
+        if (semester && grade && version) {
+            const allSelected = $('.lesson-chip').length === $('.lesson-chip.selected').length;
+            
+            $('.lesson-chip').each(function() {
+                const $chip = $(this);
+                const lessonKey = `${$chip.data('semester')}-${$chip.data('grade')}-${$chip.data('version')}-${$chip.data('lesson')}`;
+                
+                if (allSelected) {
+                    $chip.removeClass('selected');
+                    selectedLessons.delete(lessonKey);
+                } else {
+                    $chip.addClass('selected');
+                    selectedLessons.add(lessonKey);
+                }
+            });
+            
+            updateSelectedWords();
+        }
+    });
+
+    // 更新已選擇的生字
+    function updateSelectedWords() {
+        const wordChips = $('.word-chips');
+        wordChips.empty();
+        
+        const orderedWords = [];  // 使用陣列來保持順序
+        selectedWords.clear();  // 清空已選擇的生字集合
+        
+        // 按照學期、年級、版本、課次的順序取得生字
+        const semester = $('#semesterSelect').val();
+        const grade = $('#gradeSelect').val();
+        const version = $('#versionSelect').val();
+        
+        if (semester && grade && version && wordsData[semester]?.[grade]?.[version]) {
+            // 取得所有課次並排序
+            const lessons = Object.keys(wordsData[semester][grade][version])
+                .sort((a, b) => {
+                    // 處理可能的中文數字課次
+                    const numA = parseInt(a) || 0;
+                    const numB = parseInt(b) || 0;
+                    return numA - numB;
+                });
+            
+            // 依序檢查每一課
+            lessons.forEach(lessonNum => {
+                const lessonKey = `${semester}-${grade}-${version}-${lessonNum}`;
+                if (selectedLessons.has(lessonKey)) {
+                    const words = wordsData[semester][grade][version][lessonNum].words;
+                    words.forEach(word => {
+                        if (!orderedWords.includes(word)) {  // 避免重複添加
+                            orderedWords.push(word);
+                            selectedWords.add(word);  // 同時添加到 Set 中
+                        }
+                    });
+                }
+            });
+        }
+        
+        // 依序顯示生字
+        orderedWords.forEach(word => {
+            wordChips.append(`
+                <div class="word-chip ${selectedWords.has(word) ? '' : 'deselected'}" data-word="${word}">
+                    ${word}
+                </div>
+            `);
+        });
+    }
+
+    // 處理生字點擊
+    $(document).on('click', '.word-chip', function() {
+        const $chip = $(this);
+        const word = $chip.data('word');
+        
+        if ($chip.hasClass('deselected')) {
+            $chip.removeClass('deselected');
+            selectedWords.add(word);
+        } else {
+            $chip.addClass('deselected');
+            selectedWords.delete(word);
+        }
+    });
+
+    // 填入選擇的生字
+    $('#applyWords').click(function() {
+        const orderedWords = [];
+        const semester = $('#semesterSelect').val();
+        const grade = $('#gradeSelect').val();
+        const version = $('#versionSelect').val();
+        
+        if (semester && grade && version && wordsData[semester]?.[grade]?.[version]) {
+            // 取得所有課次並排序
+            const lessons = Object.keys(wordsData[semester][grade][version])
+                .sort((a, b) => {
+                    const numA = parseInt(a) || 0;
+                    const numB = parseInt(b) || 0;
+                    return numA - numB;
+                });
+            
+            // 依序檢查每一課
+            lessons.forEach(lessonNum => {
+                const lessonKey = `${semester}-${grade}-${version}-${lessonNum}`;
+                if (selectedLessons.has(lessonKey)) {
+                    const words = wordsData[semester][grade][version][lessonNum].words;
+                    words.forEach(word => {
+                        if (!orderedWords.includes(word) && selectedWords.has(word)) {
+                            orderedWords.push(word);
+                        }
+                    });
+                }
+            });
+        }
+        
+        // 清空所有內容
+        $('#chineseInput').val('');
+        $('.practice-sheet').remove();
+        $('#downloadContainer').hide();
+        
+        // 填入新的內容
+        $('#chineseInput').val(orderedWords.join(''));
+        $('#lessonModal').modal('hide');
+        
+        // 觸發輸入事件以更新練習簿
+        $('#chineseInput').trigger('input');
+    });
+
+    // 打開課文選擇 Modal
+    $('#openLessonModal').click(function() {
+        $('#lessonModal').modal('show');
+    });
+
+    // Modal 打開時初始化選擇狀態
+    $('#lessonModal').on('show.bs.modal', function() {
+        if (isFirstModalOpen) {
+            // 只在第一次打開時初始化
+            setTimeout(() => {
+                $('#selectAllLessons').click();
+            }, 100);
+            isFirstModalOpen = false;
+        }
+    });
+
     // 檢查輸入是否為中文字
     function isChineseChar(str) {
         const reg = /^[\u4e00-\u9fa5]+$/;
@@ -883,7 +1334,7 @@ $(document).ready(function() {
                     letterRendering: true,
                 });
 
-                // ✨ 調整這裡的數值來改變整體大小和位���
+                // ✨ 調整這裡的數值來改變整體大小和位置
                 const scale = PDF_SCALE;
                 const margin = PDF_MARGIN;
                 const imgWidth = 210 * scale;  // A4 寬度 * 縮放比例
