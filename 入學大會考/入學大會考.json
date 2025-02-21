@@ -1,0 +1,68 @@
+{
+    "set_id": "entrance",
+    "title": "入學大會考題組",
+    "gradientColorStart": "#FDF1CA",
+    "gradientColorEnd": "#00bfff",
+    "questions": [
+        {
+            "question": "上學會有點心時間?",
+            "correctAnswer": false,
+            "image": "images/entrance/q1.png",
+            "explanation": "和幼兒園不同，小學只有提供營養午餐，沒有專門的點心時間。"
+        },
+        {
+            "question": "一年級每天都半天班?",
+            "correctAnswer": false,
+            "image": "images/entrance/q2.png",
+            "explanation": "小學低年級的課程安排多為每週4天半天班，1天全天班，並非每天都是半天。"
+        },
+        {
+            "question": "可以帶早餐去學校吃?",
+            "correctAnswer": false,
+            "image": "images/entrance/q3.png",
+            "explanation": "小學沒有安排早餐時間，因此孩子需要在上學前吃完早餐。"
+        },
+        {
+            "question": "學校馬桶大都是蹲式馬桶?",
+            "correctAnswer": true,
+            "image": "images/entrance/q4.png",
+            "explanation": "小學的所有教室蹲式馬桶，與幼兒園或家裡常見的坐式馬桶不同。"
+        },
+        {
+            "question": "最晚點09:00要抵達學校?",
+            "correctAnswer": false,
+            "image": "images/entrance/q5.png",
+            "explanation": "多數小學要求學生在7:30到7:50之間抵達，建議家長培養孩子早睡早起的習慣，並提早到校。"
+        },
+        {
+            "question": "每堂上課時間40分鐘?",
+            "correctAnswer": true,
+            "image": "images/entrance/q6.png",
+            "explanation": "小學每節課的時間為40分鐘，下課時間為10分鐘。"
+        },
+        {
+            "question": "午餐學生須自己幫忙打菜?",
+            "correctAnswer": true,
+            "image": "images/entrance/q7.png",
+            "explanation": "孩子需要自己打飯菜，建議在家訓練孩子養成獨立用餐的習慣，提升自理能力。"
+        },
+        {
+            "question": "每天要抄寫聯絡簿?",
+            "correctAnswer": true,
+            "image": "images/entrance/q8.png",
+            "explanation": "小一剛開始時，老師可能會提供印好的聯絡簿貼紙，但之後孩子需要自己抄寫聯絡簿。"
+        },
+        {
+            "question": "低年級每學期總共考三次段考?",
+            "correctAnswer": false,
+            "image": "images/entrance/q9.png",
+            "explanation": "根據教育部規定，國小低年級的段考次數上限由每學期3次調整為2次。"
+        },
+        {
+            "question": "教學內容偏重素養學習?",
+            "correctAnswer": true,
+            "image": "images/entrance/q10.png",
+            "explanation": "自108學年起，小一新生開始使用108課綱的教材，課程重視「素養」的培養，鼓勵孩子將學習與生活結合。"
+        }
+    ]
+} 
