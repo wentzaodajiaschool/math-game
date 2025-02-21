@@ -189,6 +189,10 @@
             width: 100%;
             background: none;
             line-height: 1.4;
+            min-height: calc(1.4em * 2 + 30px); /* 兩行文字高度加上padding */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .welcome-screen {
@@ -320,6 +324,9 @@
         }
 
         @media (max-width: 768px) {
+            .quiz-layout{
+                gap: 0px;
+            }
             .container {
                 padding: 10px;
                 padding-bottom: 80px;
@@ -370,6 +377,7 @@
                 margin: 10px 0;
                 padding: 10px;
                 order: 2;
+                min-height: calc(1.4em * 2 + 20px); /* 手機版兩行文字高度加上padding */
             }
 
             .game-container {
