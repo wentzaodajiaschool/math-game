@@ -322,11 +322,12 @@
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
-                padding-bottom: 30px;
+                padding-bottom: calc(30px + env(safe-area-inset-bottom, 80px));
+                min-height: -webkit-fill-available;
             }
 
             .header-image {
-                margin-top: 10rem;
+                margin-top: 2rem;
             }
 
             .header-image.quiz-mode {
@@ -356,6 +357,7 @@
                 gap: 40px;
                 width: 100%;
                 margin: 20px 0;
+                margin-bottom: calc(20px + env(safe-area-inset-bottom, 80px));
                 order: 3;
             }
 
@@ -366,6 +368,32 @@
 
             .game-container {
                 padding: 10px;
+                padding-bottom: calc(20px + env(safe-area-inset-bottom, 80px));
+            }
+
+            .progress {
+                bottom: env(safe-area-inset-bottom, 0);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: calc(20px + env(safe-area-inset-bottom, 80px));
+            }
+
+            .reveal-btn, .checklist-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .explanation-section {
+                margin-bottom: calc(20px + env(safe-area-inset-bottom, 80px));
+            }
+
+            .modal-content {
+                margin-bottom: env(safe-area-inset-bottom, 80px);
+                max-height: calc(100vh - env(safe-area-inset-bottom, 80px));
+                overflow-y: auto;
             }
         }
 
@@ -594,6 +622,17 @@
             stroke-width: 3;
             stroke-linecap: round;
             stroke-linejoin: round;
+        }
+
+        /* 新增 viewport height 修正 */
+        :root {
+            --vh: 1vh;
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            .container {
+                min-height: -webkit-fill-available;
+            }
         }
     </style>
 </head>
@@ -880,6 +919,18 @@
             window.history.pushState({}, '', url);
             location.reload();
         }
+
+        window.addEventListener('load', () => {
+            // 設置真實的視口高度
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+            // 在視口大小改變時重新計算
+            window.addEventListener('resize', () => {
+                vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            });
+        });
     </script>
 </body>
 </html> 
