@@ -301,6 +301,7 @@
             margin: 30px 0;
             perspective: 1000px;
             transform-style: preserve-3d;
+            padding: 10px;  /* 添加內邊距避免裁切 */
         }
 
         .star {
@@ -330,15 +331,13 @@
 
         @keyframes starRotate {
             0% {
-                transform: scale(0.3) rotate(-720deg) translateY(50px);
+                transform: scale(0.3) rotate(-360deg) translateY(30px);
                 opacity: 0;
             }
-
-            50% {
-                transform: scale(1.2) rotate(-360deg) translateY(0);
-                opacity: 0.8;
+            70% {
+                transform: scale(1.1) rotate(-90deg) translateY(0);
+                opacity: 0.9;
             }
-
             100% {
                 transform: scale(1) rotate(0deg) translateY(0);
                 opacity: 1;
@@ -518,13 +517,14 @@
             }
 
             .stars-container {
-                gap: 10px;  /* 減少星星之間的間距 */
-                margin: 20px 0;  /* 減少上下邊距 */
+                gap: 12px;
+                margin: 15px 0;
+                padding: 8px;  /* 手機版的內邊距 */
             }
 
             .star {
-                width: 70px;  /* 縮小星星尺寸 */
-                height: 70px;
+                width: 65px;  /* 稍微再縮小一點 */
+                height: 65px;
             }
 
             .header-image {
@@ -648,6 +648,11 @@
             .submit-btn {
                 padding: 10px;
                 font-size: 16px;
+            }
+
+            .score-text {
+                font-size: 28px;  /* 調整分數文字大小 */
+                margin: 15px 0;
             }
         }
 
