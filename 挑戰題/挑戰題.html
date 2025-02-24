@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <title></title>
     <style>
         @font-face {
@@ -98,7 +99,7 @@
             width: 100%;
             max-width: 1200px;
             min-height: 100vh;
-            height: auto;
+            height: 100vh; /* 固定高度為視窗高度 */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -110,6 +111,12 @@
             z-index: 1;
             transform: scale(0.9);
             transform-origin: top center;
+            overflow-y: auto; /* 只在需要時出現滾動條 */
+        }
+
+        body.show-results .container {
+            height: auto; /* 結果頁面時改為自動高度 */
+            min-height: 100vh;
         }
 
         .header-image {
@@ -122,7 +129,7 @@
 
         .header-image.quiz-mode {
             max-width: 250px;
-            margin: 10px 0;
+            margin: 0; /* 移除邊距 */
             transform: translateY(0);
         }
 
@@ -136,6 +143,7 @@
             transition: all 0.6s ease;
             background: none;
             box-shadow: none;
+            margin: auto 0; /* 垂直置中 */
         }
 
         .game-container.show {
@@ -165,7 +173,7 @@
             flex-direction: column;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 0; /* 移除底部邊距 */
         }
 
         .quiz-content {
@@ -685,6 +693,7 @@
             height: 0;
             overflow: hidden;
             transition: all 0.5s ease;
+            align-items: stretch;
         }
 
         .explanation-cards.show {
@@ -698,6 +707,9 @@
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .explanation-card:hover {
@@ -795,6 +807,19 @@
         .checklist-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 12px rgba(255, 152, 0, 0.4);
+        }
+
+        .checklist-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
         }
 
         .checklist-btn:hover::before {
@@ -921,6 +946,15 @@
             stroke-width: 3;
             stroke-linecap: round;
             stroke-linejoin: round;
+        }
+
+        @media (max-width: 768px) {
+            .explanation-card {
+                padding: 15px;
+                margin-bottom: 10px;
+                width: calc(100% - 20px);
+                max-width: none;
+            }
         }
     </style>
 </head>
