@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小一入學知識王</title>
+    <title></title>
     <style>
         @font-face {
             font-family: 'BpmfGenSenRounded';
@@ -1040,10 +1040,12 @@
                 const data = await response.json();
                 const challengeData = data.challenge_data;
                 
+                // 更新網頁標題
+                document.title = `文藻美語 - ${challengeData.title}`;
                 // 更新標題圖片
                 document.getElementById('headerImage').src = data.image_url;
                 // 更新歡迎文字
-                document.getElementById('welcomeText').textContent = challengeData.welcomeText || '歡迎來挑戰！';
+                document.getElementById('welcomeText').textContent = challengeData.welcomeText || '歡迎來到文藻美語的挑戰題！';
                 // 更新背景顏色
                 if (challengeData.gradientColorStart && challengeData.gradientColorEnd) {
                     document.querySelector('.gradient-background').style.background = 
@@ -1068,8 +1070,6 @@
                 const challengeData = data.challenge_data;
                 currentQuestionSet = challengeData;
                 currentQuestions = challengeData.questions;
-                // 更新標題
-                document.title = `小一入學知識王 - ${challengeData.title}`;
             } catch (error) {
                 console.error('Error loading questions:', error);
                 alert('題組載入失敗，請確認網址是否正確');
