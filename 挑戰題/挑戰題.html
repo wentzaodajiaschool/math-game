@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <title></title>
     <style>
@@ -45,10 +45,19 @@
             position: relative;
             margin-right: calc(100vw - 100%);
             /* 防止滾動條出現時的跳動 */
+            height: 100vh;
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            /* iOS 裝置特定樣式 */
+            body {
+                height: -webkit-fill-available;
+            }
         }
 
         body.show-results {
             overflow-y: auto;
+            height: auto;
         }
 
         .gradient-background {
@@ -99,7 +108,7 @@
             width: 100%;
             max-width: 1200px;
             min-height: 100vh;
-            height: 100vh; /* 固定高度為視窗高度 */
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -111,12 +120,12 @@
             z-index: 1;
             transform: scale(0.9);
             transform-origin: top center;
-            overflow-y: auto; /* 只在需要時出現滾動條 */
+            overflow-y: auto;
         }
 
         body.show-results .container {
-            height: auto; /* 結果頁面時改為自動高度 */
-            min-height: 100vh;
+            height: auto;
+            min-height: calc(100vh - 60px);
         }
 
         .header-image {
@@ -510,10 +519,27 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                height: calc(100vh - 60px); /* 扣除底部導覽列高度 */
+                overflow: hidden;
+            }
+
+            body.show-results {
+                height: auto;
+                overflow-y: auto;
+            }
+
             .container {
                 transform: scale(0.95);
                 padding: 10px;
                 padding-bottom: 60px;
+                height: calc(100vh - 60px);
+                min-height: calc(100vh - 60px);
+            }
+
+            body.show-results .container {
+                height: auto;
+                min-height: calc(100vh - 60px);
             }
 
             .header-image {
