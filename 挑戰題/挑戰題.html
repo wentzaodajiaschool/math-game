@@ -99,11 +99,11 @@
             width: 100%;
             max-width: 1200px;
             min-height: 100vh;
-            height: 100vh;
+            height: 100vh; /* 固定高度為視窗高度 */
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 20px;
             position: relative;
             padding-bottom: 40px;
@@ -111,13 +111,12 @@
             z-index: 1;
             transform: scale(0.9);
             transform-origin: top center;
-            overflow-y: auto;
+            overflow-y: auto; /* 只在需要時出現滾動條 */
         }
 
         body.show-results .container {
-            height: auto;
+            height: auto; /* 結果頁面時改為自動高度 */
             min-height: 100vh;
-            justify-content: flex-start;
         }
 
         .header-image {
@@ -144,7 +143,7 @@
             transition: all 0.6s ease;
             background: none;
             box-shadow: none;
-            margin: auto 0; /* 垂直置中 */
+            /* margin: auto 0; */
         }
 
         .game-container.show {
@@ -507,8 +506,7 @@
         }
 
         .mobile-options {
-            display: none;
-            /* 預設隱藏手機版按鈕容器 */
+            display: none;  /* 預設隱藏手機版按鈕容器 */
         }
 
         @media (max-width: 768px) {
@@ -541,6 +539,10 @@
                 min-height: calc(1.4em * 2 + 16px);
             }
 
+            .quiz-content .options {
+                display: none;  /* 隱藏電腦版按鈕 */
+            }
+
             .option-btn {
                 width: 70px;
                 height: 70px;
@@ -560,10 +562,6 @@
 
             .quiz-content {
                 flex-direction: column;
-            }
-
-            .quiz-content .options {
-                display: none; /* 在手機版隱藏電腦版按鈕 */
             }
 
             .mobile-options {
@@ -665,7 +663,7 @@
         .explanation-section {
             position: relative;
             width: 100%;
-            display: none;
+            display: flex;
             flex-direction: column;
             align-items: center;
             background: rgba(255, 255, 255, 0.1);
@@ -679,10 +677,10 @@
             visibility: hidden;
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             scroll-margin-top: 20px;
+            /* 添加滾動邊距 */
         }
 
         .explanation-section.show {
-            display: flex;
             opacity: 1;
             transform: translateY(0);
             visibility: visible;
