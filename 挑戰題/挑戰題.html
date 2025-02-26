@@ -361,18 +361,24 @@
             margin: 30px 0;
             perspective: 1000px;
             transform-style: preserve-3d;
-            padding: 10px;  /* 添加內邊距避免裁切 */
+            padding: 20px;  /* 增加內邊距避免裁切 */
+            width: 100%;
+            /* max-width: 400px; */
+             /* 限制最大寬度 */
+            overflow: visible; /* 確保內容不被裁切 */
         }
 
         .star {
-            width: 100px;
-            height: 100px;
+            width: 80px; /* 稍微縮小星星尺寸 */
+            height: 80px;
             opacity: 0;
             transform: scale(0.3) rotateY(-180deg) translateZ(-200px);
             transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
             transform-style: preserve-3d;
             perspective: 1000px;
+            position: relative; /* 確保定位正確 */
+            margin: 0 auto; /* 居中顯示 */
         }
 
         .star.show {
@@ -387,6 +393,8 @@
             height: 100%;
             fill: #FFD700;
             filter: url(#star-shadow);
+            display: block; /* 確保 SVG 正確顯示 */
+            position: relative; /* 確保定位正確 */
         }
 
         @keyframes starRotate {
@@ -401,6 +409,39 @@
             100% {
                 transform: scale(1) rotate(0deg) translateY(0);
                 opacity: 1;
+            }
+        }
+
+        /* 添加 iOS Safari 特定的動畫修復 */
+        @supports (-webkit-touch-callout: none) {
+            .star {
+                -webkit-transform: scale(0.3) rotateY(-180deg) translateZ(-200px);
+                transform: scale(0.3) rotateY(-180deg) translateZ(-200px);
+            }
+            
+            .star.show {
+                -webkit-transform: scale(1) rotateY(0deg) translateZ(0);
+                transform: scale(1) rotateY(0deg) translateZ(0);
+                -webkit-animation: starRotate 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+                animation: starRotate 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            
+            @-webkit-keyframes starRotate {
+                0% {
+                    -webkit-transform: scale(0.3) rotate(-360deg) translateY(30px);
+                    transform: scale(0.3) rotate(-360deg) translateY(30px);
+                    opacity: 0;
+                }
+                70% {
+                    -webkit-transform: scale(1.1) rotate(-90deg) translateY(0);
+                    transform: scale(1.1) rotate(-90deg) translateY(0);
+                    opacity: 0.9;
+                }
+                100% {
+                    -webkit-transform: scale(1) rotate(0deg) translateY(0);
+                    transform: scale(1) rotate(0deg) translateY(0);
+                    opacity: 1;
+                }
             }
         }
 
@@ -623,14 +664,16 @@
             }
 
             .stars-container {
-                gap: 12px;
+                gap: 10px; /* 減少間距 */
                 margin: 15px 0;
-                padding: 8px;  /* 手機版的內邊距 */
+                padding: 15px; /* 增加內邊距 */
+                /* max-width: 300px; */
+                /* 限制最大寬度 */
             }
 
             .star {
-                width: 65px;  /* 稍微再縮小一點 */
-                height: 65px;
+                width: 60px;  /* 在手機上進一步縮小 */
+                height: 60px;
             }
 
             .quiz-content {
@@ -1342,9 +1385,9 @@
                 <div class="stars-container">
                     ${Array(3).fill().map((_, i) => `
                         <div class="star${i < starCount ? ' active' : ''}" data-index="${i}">
-                            <svg viewBox="0 0 53 50">
+                            <svg viewBox="0 0 50 50" preserveAspectRatio="xMidYMid meet">
                                 <defs>
-                                    <filter id="star-shadow">
+                                    <filter id="star-shadow-${i}">
                                         <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
                                         <feOffset dx="0" dy="2"/>
                                         <feComponentTransfer>
@@ -1356,30 +1399,11 @@
                                         </feMerge>
                                     </filter>
                                 </defs>
-                                <path d="M26.5,2 
-                                    C27.5,2 28.5,2.8 28.9,4 
-                                    L34.1,19.2 
-                                    C34.3,19.8 34.9,20.2 35.5,20.2 
-                                    L51.5,20.2 
-                                    C52.9,20.2 53.5,22 52.3,22.8 
-                                    L39.1,32.4 
-                                    C38.6,32.8 38.4,33.4 38.6,34 
-                                    L44.1,49.2 
-                                    C44.5,50.4 43,51.4 41.8,50.6 
-                                    L28.6,41 
-                                    C28.1,40.6 27.3,40.6 26.8,41 
-                                    L13.6,50.6 
-                                    C12.4,51.4 10.9,50.4 11.3,49.2 
-                                    L16.8,34 
-                                    C17,33.4 16.8,32.8 16.3,32.4 
-                                    L3.1,22.8 
-                                    C1.9,22 2.5,20.2 3.9,20.2 
-                                    L19.9,20.2 
-                                    C20.5,20.2 21.1,19.8 21.3,19.2 
-                                    L26.5,4 
-                                    C26.9,2.8 27.9,2 28.9,2" 
+                                <path d="M25,5 L31,18 L45,20 L35,30 L38,45 L25,38 L12,45 L15,30 L5,20 L19,18 Z" 
+                                    fill="#FFD700" 
+                                    filter="url(#star-shadow-${i})"
                                     stroke="#FFA500" 
-                                    stroke-width="2"
+                                    stroke-width="1"
                                     stroke-linejoin="round"/>
                             </svg>
                         </div>
@@ -1411,6 +1435,12 @@
                     setTimeout(() => {
                         if (index < starCount) {
                             star.classList.add('show');
+                            
+                            // 修復 iOS Safari 上的顯示問題
+                            if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+                                star.style.webkitTransform = 'scale(1) rotateY(0deg) translateZ(0)';
+                                star.style.transform = 'scale(1) rotateY(0deg) translateZ(0)';
+                            }
                         }
                     }, index * 300); // 增加間隔時間讓3D效果更明顯
                 });
