@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <title></title>
     <style>
@@ -31,6 +31,7 @@
         html {
             overflow-y: scroll;
             scrollbar-gutter: stable;
+            touch-action: manipulation; /* 防止瀏覽器預設的縮放行為 */
         }
 
         body {
@@ -46,12 +47,46 @@
             margin-right: calc(100vw - 100%);
             /* 防止滾動條出現時的跳動 */
             height: 100vh;
+            -webkit-text-size-adjust: 100%; /* 禁止iOS調整文字大小 */
+            -webkit-touch-callout: none; /* 禁止長按呼出選單 */
+            -webkit-user-select: none; /* 禁止選取文字 */
+            user-select: none;
         }
 
         @supports (-webkit-touch-callout: none) {
             /* iOS 裝置特定樣式 */
             body {
                 height: -webkit-fill-available;
+                /* 為 iOS Safari 底部導覽列添加安全區域 */
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            /* 在 iOS 中，結果頁面也需要考慮底部安全區域 */
+            body.show-results {
+                height: auto;
+                padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
+            }
+
+            /* 在 iOS 中調整容器高度，考慮底部導覽列 */
+            .container {
+                min-height: calc(100vh - env(safe-area-inset-bottom));
+                padding-bottom: calc(40px + env(safe-area-inset-bottom));
+            }
+
+            /* 修正 iOS 中在結果頁面時的滾動問題 */
+            @media (max-width: 768px) {
+                body {
+                    height: calc(100vh - 60px - env(safe-area-inset-bottom));
+                }
+                
+                .container {
+                    height: calc(100vh - 60px - env(safe-area-inset-bottom));
+                    min-height: calc(100vh - 60px - env(safe-area-inset-bottom));
+                }
+                
+                body.show-results .container {
+                    min-height: calc(100vh - 60px - env(safe-area-inset-bottom));
+                }
             }
         }
 
@@ -134,12 +169,23 @@
             margin-bottom: 20px;
             transition: all 0.8s ease;
             margin-top: 1rem;
+            position: relative; /* 設置為相對定位 */
+            z-index: 10; /* 確保在最上層 */
         }
 
         .header-image.quiz-mode {
             max-width: 250px;
             margin: 0; /* 移除邊距 */
             transform: translateY(0);
+        }
+
+        /* 確保在結果頁面中，標題圖片保持位置不變 */
+        body.show-results .header-image.quiz-mode {
+            position: relative;
+            top: 0;
+            left: 0;
+            max-width: 250px;
+            margin: 0;
         }
 
         .game-container {
@@ -1070,6 +1116,18 @@
         let currentQuestionIndex = 0;
         let score = 0;
 
+        // 防止 iOS Safari 的雙指縮放
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            // 在答題階段禁止滾動
+            if (!document.body.classList.contains('show-results')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
         // 從 URL 獲取題組 ID
         function getQuestionSetId() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1235,6 +1293,11 @@
             setTimeout(() => {
                 questionElement.textContent = '';
             }, 500);
+
+            // 確保標題圖片位置不變
+            const headerImage = document.getElementById('headerImage');
+            headerImage.style.position = 'relative';
+            headerImage.style.zIndex = '10';
 
             let explanationHTML = '<div class="explanation-section"><div class="explanation-cards">';
             currentQuestions.forEach((q, index) => {
